@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 
+
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -96,6 +97,9 @@ const MuiTooltip = Loadable(lazy(() => import('../views/ui-components/MuiTooltip
 const MuiTransferList = Loadable(lazy(() => import('../views/ui-components/MuiTransferList')));
 const MuiTypography = Loadable(lazy(() => import('../views/ui-components/MuiTypography')));
 
+const Sites = Loadable(lazy(() => import('../views/pages/sites')));
+const SitesCadastro = Loadable(lazy(() => import('../views/pages/sites/cadastro')));
+
 // authentication
 const Login = Loadable(lazy(() => import('../views/authentication/auth1/Login')));
 const Login2 = Loadable(lazy(() => import('../views/authentication/auth2/Login2')));
@@ -118,6 +122,8 @@ const Router = [
     path: '/',
     element: <FullLayout />,
     children: [
+      { path: '/sites/lista', exact: true, element: <Sites /> },
+      { path: '/sites/cadastro', exact: true, element: <SitesCadastro /> },
       { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
       { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
       { path: '/apps/chats', element: <Chats /> },
@@ -135,7 +141,7 @@ const Router = [
       { path: '/apps/followers', element: <Followers /> },
       { path: '/apps/friends', element: <Friends /> },
       { path: '/apps/gallery', element: <Gallery /> },
-      { path: '/user-profile', element: <UserProfile /> },
+      { path: '/meu-perfil', element: <UserProfile /> },
       { path: '/pages/casl', element: <RollbaseCASL /> },
       { path: '/pages/treeview', element: <Treeview /> },
       { path: '/pages/pricing', element: <Pricing /> },

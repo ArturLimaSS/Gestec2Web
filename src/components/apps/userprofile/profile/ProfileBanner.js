@@ -24,10 +24,11 @@ import {
 } from '@tabler/icons';
 import ProfileTab from './ProfileTab';
 import BlankCard from '../../../shared/BlankCard';
+import { useAuthStore } from '../../../../zustand/Auth/AuthStore';
 
 const ProfileBanner = () => {
   const ProfileImage = styled(Box)(() => ({
-    backgroundImage: 'linear-gradient(#50b2fc,#f44c66)',
+    backgroundImage: 'linear-gradient(#50b2fc,#615DFF)',
     borderRadius: '50%',
     width: '110px',
     height: '110px',
@@ -45,16 +46,18 @@ const ProfileBanner = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const { user } = useAuthStore((store) => {
+    return {
+      user: store.user,
+    }
+  })
+
   return (
     <>
       <BlankCard>
-        {isLoading ? (
-          <>
-            <Skeleton variant="square" animation="wave" width="100%" height={330}></Skeleton>
-          </>
-        ) : (
-          <CardMedia component="img" image={profilecover} alt={profilecover} width="100%" />
-        )}
+        <Box sx={{
+          height: 120
+        }}></Box>
         <Grid container spacing={0} justifyContent="center" alignItems="center">
           {/* Post | Followers | Following */}
           <Grid
@@ -72,7 +75,7 @@ const ProfileBanner = () => {
             }}
           >
             <Stack direction="row" textAlign="center" justifyContent="center" gap={6} m={3}>
-              <Box>
+              {/* <Box>
                 <Typography color="text.secondary">
                   <IconFileDescription width="20" />
                 </Typography>
@@ -82,8 +85,8 @@ const ProfileBanner = () => {
                 <Typography color="textSecondary" variant="h6" fontWeight={400}>
                   Posts
                 </Typography>
-              </Box>
-              <Box>
+              </Box> */}
+              {/* <Box>
                 <Typography color="text.secondary">
                   <IconUserCircle width="20" />
                 </Typography>
@@ -93,8 +96,8 @@ const ProfileBanner = () => {
                 <Typography color="textSecondary" variant="h6" fontWeight={400}>
                   Followers
                 </Typography>
-              </Box>
-              <Box>
+              </Box> */}
+              {/* <Box>
                 <Typography color="text.secondary">
                   <IconUserCheck width="20" />
                 </Typography>
@@ -104,13 +107,13 @@ const ProfileBanner = () => {
                 <Typography color="textSecondary" variant="h6" fontWeight={400}>
                   Following
                 </Typography>
-              </Box>
+              </Box> */}
             </Stack>
           </Grid>
           {/* about profile */}
           <Grid
             item
-            lg={4}
+            lg={12}
             sm={12}
             xs={12}
             sx={{
@@ -133,8 +136,8 @@ const ProfileBanner = () => {
               <Box>
                 <ProfileImage>
                   <Avatar
-                    src={userimg}
-                    alt={userimg}
+                    src={user.name}
+                    alt={user.name}
                     sx={{
                       borderRadius: '50%',
                       width: '100px',
@@ -145,17 +148,14 @@ const ProfileBanner = () => {
                 </ProfileImage>
                 <Box mt={1}>
                   <Typography fontWeight={600} variant="h5">
-                    Mathew Anderson
-                  </Typography>
-                  <Typography color="textSecondary" variant="h6" fontWeight={400}>
-                    Designer
+                    {user.name}
                   </Typography>
                 </Box>
               </Box>
             </Box>
           </Grid>
           {/* friends following buttons */}
-          <Grid
+          {/* <Grid
             item
             lg={4}
             sm={12}
@@ -185,10 +185,10 @@ const ProfileBanner = () => {
                 Add To Story
               </Button>
             </Stack>
-          </Grid>
+          </Grid> */}
         </Grid>
         {/**TabbingPart**/}
-        <ProfileTab />
+        {/* <ProfileTab /> */}
       </BlankCard>
     </>
   );

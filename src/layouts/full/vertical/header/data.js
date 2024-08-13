@@ -67,7 +67,7 @@ const notifications = [
 //
 const profile = [
   {
-    href: '/user-profile',
+    href: '/meu-perfil',
     title: 'Meu perfil',
     subtitle: 'Configurações de dados pessoais',
     icon: icon1,
@@ -161,7 +161,7 @@ const pageLinks = [
     title: 'Notes App',
   },
   {
-    href: '/user-profile',
+    href: '/meu-perfil',
     title: 'User Application',
   },
   {

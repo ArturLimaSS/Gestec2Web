@@ -20,7 +20,7 @@ function App() {
   }));
 
   useEffect(() => {
-    if (token && location.pathname !== "/menu") {
+    if (token && location.pathname !== "/") {
       checkLogin(navigate);
     }
   }, []);

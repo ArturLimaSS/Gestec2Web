@@ -40,7 +40,7 @@ export const useAuthStore = create((set) => ({
     try {
       const response = await api.post('/auth/check');
       set({ user: response.data.user, empresa: response.data.user.empresa[0], isLogged: true, error: null, status: 'succeeded', routes: Router });
-      if (!response.data.granja) {
+      if (!response.data.user.empresa[0]) {
         navigate('/');
       }
     } catch (error) {

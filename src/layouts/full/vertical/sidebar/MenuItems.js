@@ -48,6 +48,7 @@ import {
   IconBorderStyle2,
   IconAppWindow,
   IconLockAccess,
+  IconPlus,
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -57,7 +58,6 @@ const Menuitems = [
     navlabel: true,
     subheader: 'Home',
   },
-
   {
     id: uniqueId(),
     title: 'Modern',
@@ -71,6 +71,32 @@ const Menuitems = [
     title: 'eCommerce',
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
+  },
+
+  {
+    navlabel: true,
+    subheader: 'Ativos',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Sites',
+    icon: IconChartLine,
+    href: '/sites',
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Novo Site',
+        icon: IconPlus,
+        href: '/sites/cadastro',
+      },
+      {
+        id: uniqueId(),
+        title: 'Lista de Sites',
+        icon: IconPlus,
+        href: '/sites/lista',
+      }
+    ]
   },
   {
     navlabel: true,
@@ -147,13 +173,13 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Users',
     icon: IconUserCircle,
-    href: '/user-profile',
+    href: '/meu-perfil',
     children: [
       {
         id: uniqueId(),
         title: 'Profile',
         icon: IconPoint,
-        href: '/user-profile',
+        href: '/meu-perfil',
       },
       {
         id: uniqueId(),
