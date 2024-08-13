@@ -13,7 +13,7 @@ const ProfileTab = () => {
     {
       label: 'Profile',
       icon: <IconUserCircle size="20" />,
-      to: '/user-profile',
+      to: '/meu-perfil',
     },
     {
       label: 'Followers',

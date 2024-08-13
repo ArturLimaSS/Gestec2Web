@@ -27,7 +27,7 @@ export const Profile = () => {
     >
       {!hideMenu ? (
         <>
-          <Avatar alt="Remy Sharp" src={img1} />
+          <Avatar alt={user.name  } src={user.name} />
 
           <Box>
             <Typography variant="h6" color="textPrimary">{user?.name?.split(' ')[0]}</Typography>
