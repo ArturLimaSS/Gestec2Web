@@ -52,7 +52,7 @@ export const useAuthStore = create((set) => ({
   updateUser: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.put(`/user`, data);
+      const response = await api.put(`/user/atualizar`, data);
       set({ user: response.data, isLoading: false });
       return response
     } catch (error) {

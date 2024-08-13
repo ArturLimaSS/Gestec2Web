@@ -23,6 +23,10 @@ const UserProfile = () => {
 
   const [editableUser, setEditableUser] = useState({})
 
+  useEffect(() => {
+    console.log(editableUser)
+  }, [editableUser])
+
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
