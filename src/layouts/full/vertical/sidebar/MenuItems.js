@@ -1,4 +1,4 @@
-import { Person } from '@mui/icons-material';
+import { Person, Settings } from '@mui/icons-material';
 import {
   IconAward,
   IconBoxMultiple,
@@ -52,27 +52,29 @@ import {
   IconPlus,
 } from '@tabler/icons';
 
+import GroupsIcon from '@mui/icons-material/Groups';
+
 import { uniqueId } from 'lodash';
 
 const Menuitems = [
-  {
-    navlabel: true,
-    subheader: 'Home',
-  },
-  {
-    id: uniqueId(),
-    title: 'Modern',
-    icon: IconAperture,
-    href: '/dashboards/modern',
-    chip: 'New',
-    chipColor: 'secondary',
-  },
-  {
-    id: uniqueId(),
-    title: 'eCommerce',
-    icon: IconShoppingCart,
-    href: '/dashboards/ecommerce',
-  },
+  // {
+  //   navlabel: true,
+  //   subheader: 'Home',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Modern',
+  //   icon: IconAperture,
+  //   href: '/dashboards/modern',
+  //   chip: 'New',
+  //   chipColor: 'secondary',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'eCommerce',
+  //   icon: IconShoppingCart,
+  //   href: '/dashboards/ecommerce',
+  // },
 
   {
     navlabel: true,
@@ -101,17 +103,16 @@ const Menuitems = [
   },
   {
     navlabel: true,
-    subheader: 'Apps',
+    subheader: 'Configurações',
   },
   {
     id: uniqueId(),
-    title: 'Contacts',
-    icon: IconPackage,
+    title: 'Usuários',
+    icon: GroupsIcon,
     chip: '2',
     chipColor: 'secondary',
     href: '/apps/contacts',
   },
-
   {
     id: uniqueId(),
     title: 'Blog',
@@ -178,9 +179,9 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Account Setting',
-    icon: IconUserCircle,
-    href: '/pages/account-settings',
+    title: 'Configurações',
+    icon: Settings,
+    href: '/configuracoes',
   },
   // {
   //   id: uniqueId(),

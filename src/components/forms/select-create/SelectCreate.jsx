@@ -3,6 +3,8 @@ import { useAuthStore } from "../../../zustand/Auth/AuthStore";
 import { useTipoEquipamentoStore } from "../../../zustand/TipoEquipamento/TipoEquipamentoStore";
 import {
   Autocomplete,
+  Box,
+  Button,
   CircularProgress,
   FormControl,
   MenuItem,
@@ -64,18 +66,17 @@ export const SelectCreate = ({ getSelectedValue }) => {
         onInputChange={handleInputChange}
         options={listaTipoEquipamento}
         getOptionLabel={option => option.nome_tipo_equipamento || ""}
+        noOptionsText={
+          <Box textAlign="center">
+            <Button onClick={handleCreate}>Cadastrar Equipamento</Button>
+          </Box>
+        }
         renderInput={params => (
           <TextField
             {...params}
             label="Tipo de Equipamento"
             variant="outlined"
             fullWidth
-            onKeyDown={event => {
-              if (event.key === "Enter" && inputValue) {
-                event.preventDefault();
-                handleCreate();
-              }
-            }}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -89,7 +90,6 @@ export const SelectCreate = ({ getSelectedValue }) => {
             }}
           />
         )}
-        freeSolo
       />
     </FormControl>
   );

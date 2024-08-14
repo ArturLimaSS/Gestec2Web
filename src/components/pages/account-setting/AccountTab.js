@@ -71,9 +71,8 @@ const AccountTab = () => {
         <BlankCard>
           <CardContent>
             <Typography variant="h5" mb={1}>
-              Change Profile
+              Logo
             </Typography>
-            <Typography color="textSecondary" mb={3}>Change your profile picture from here</Typography>
             <Box textAlign="center" display="flex" justifyContent="center">
               <Box>
                 <Avatar

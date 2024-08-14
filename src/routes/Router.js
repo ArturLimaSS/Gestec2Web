@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
+import Configuracoes from '../views/pages/configuracoes/Configuracoes';
 
 
 /* ***Layouts**** */
@@ -122,10 +123,11 @@ const Router = [
     path: '/',
     element: <FullLayout />,
     children: [
-      { path: '/sites/lista', exact: true, element: <Sites /> },
-      { path: '/sites/cadastro', exact: true, element: <SitesCadastro /> },
-      { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
-      { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
+      { path: '/sites/lista', element: <Sites /> },
+      { path: '/sites/cadastro', element: <SitesCadastro /> },
+      { path: '/configuracoes', element: <Configuracoes /> },
+      { path: '/dashboards/modern', element: <ModernDash /> },
+      { path: '/dashboards/ecommerce', element: <EcommerceDash /> },
       { path: '/apps/chats', element: <Chats /> },
       { path: '/apps/notes', element: <Notes /> },
       { path: '/apps/calendar', element: <Calendar /> },
@@ -192,6 +194,13 @@ const Router = [
       { path: '/widgets/charts', element: <WidgetCharts /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
+    ],
+  },
+  {
+    path: '/',
+    element: <BlankLayout />,
+    children: [
+      { path: '/', element: <Landingpage /> },
     ],
   },
 ];
