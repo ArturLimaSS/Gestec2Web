@@ -27,58 +27,13 @@ import {
 } from "../../../store/apps/tickets/TicketSlice";
 import { IconTrash } from "@tabler/icons";
 import { CadastroTipoServico } from "./Cadastro/CadastroTiposServicos";
+import {useTiposServicosStore} from "../";
 
 const ListaTiposServicos = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchTickets());
-  }, [dispatch]);
-
-  const getVisibleTickets = (tickets, filter, ticketSearch) => {
-    switch (filter) {
-      case "total_tickets":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
-
-      case "Pending":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.Status === "Pending" &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
-
-      case "Closed":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.Status === "Closed" &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
-
-      case "Open":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.Status === "Open" &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
-
-      default:
-        throw new Error(`Unknown filter: ${filter}`);
-    }
-  };
-
-  const tickets = useSelector(state =>
-    getVisibleTickets(
-      state.ticketReducer.tickets,
-      state.ticketReducer.currentFilter,
-      state.ticketReducer.ticketSearch
-    )
+  const { fetchTiposServicos, listaTiposServicos } = useTiposServicosStore(
+    store => ({})
   );
+
   return (
     <Box mt={4}>
       <Grid container spacing={3} mb={3}>

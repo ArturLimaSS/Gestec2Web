@@ -11,7 +11,7 @@ const TiposServicos = () => {
       title="Tipos de Serviços"
       description="Gerencie Tipos de Serviços"
     >
-      <Breadcrumb title="Tipos de Serviços" subtitle="Tipos de Serviços" />
+      <Breadcrumb title="Tipos de Serviços" subtitle="Gestão de Tipos de Serviços" />
       <BlankCard>
         <CardContent>
           <ListaTiposServicos />

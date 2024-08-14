@@ -8,6 +8,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useAuthStore } from "./zustand/Auth/AuthStore";
 import { useEffect } from "react";
 import { PublicRoutes } from "./routes/PublicRoutes";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   const navigate = useNavigate();
@@ -34,8 +35,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <RTL direction={customizer.activeDir}>
-        <CssBaseline />
-        <ScrollToTop>{routing}</ScrollToTop>
+        <SnackbarProvider>
+          <CssBaseline />
+          <ScrollToTop>{routing}</ScrollToTop>
+        </SnackbarProvider>
       </RTL>
     </ThemeProvider>
   );
