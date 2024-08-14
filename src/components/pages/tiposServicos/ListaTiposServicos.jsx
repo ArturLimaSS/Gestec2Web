@@ -27,12 +27,24 @@ import {
 } from "../../../store/apps/tickets/TicketSlice";
 import { IconTrash } from "@tabler/icons";
 import { CadastroTipoServico } from "./Cadastro/CadastroTiposServicos";
-import {useTiposServicosStore} from "../";
+import { useTiposServicosStore } from "../../../zustand/TiposServicos/TiposServicosStore";
+import { useAuthStore } from "../../../zustand/Auth/AuthStore";
 
 const ListaTiposServicos = () => {
   const { fetchTiposServicos, listaTiposServicos } = useTiposServicosStore(
-    store => ({})
+    store => ({
+      fetchTiposServicos: store.fetchTiposServicos,
+      listaTiposServicos: store.listaTiposServicos,
+    })
   );
+
+  const { empresa } = useAuthStore(store => ({
+    empresa: store.empresa,
+  }));
+
+  useEffect(() => {
+    fetchTiposServicos(empresa.empresa_id);
+  }, [empresa]);
 
   return (
     <Box mt={4}>
@@ -58,79 +70,34 @@ const ListaTiposServicos = () => {
                 <Typography variant="h6">Id</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">Ticket</Typography>
+                <Typography variant="h6">Nome</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">Assigned To</Typography>
+                <Typography variant="h6">Descrição</Typography>
               </TableCell>
               <TableCell>
-                <Typography variant="h6">Status</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">Date</Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="h6">Action</Typography>
+                <Typography variant="h6">Opções</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {tickets.map(ticket => (
-              <TableRow key={ticket.Id} hover>
-                <TableCell>{ticket.Id}</TableCell>
+            {listaTiposServicos?.map(tipo => (
+              <TableRow key={tipo.tipo_servico_id} hover>
+                <TableCell>{tipo.tipo_servico_id}</TableCell>
                 <TableCell>
                   <Box>
                     <Typography variant="h6" fontWeight="500" noWrap>
-                      {ticket.ticketTitle}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      noWrap
-                      sx={{ maxWidth: "250px" }}
-                      variant="subtitle2"
-                      fontWeight="400"
-                    >
-                      {ticket.ticketDescription}
+                      {tipo.nome_tipo_servico}
                     </Typography>
                   </Box>
                 </TableCell>
+
                 <TableCell>
-                  <Stack direction="row" gap="10px" alignItems="center">
-                    <Avatar
-                      src={ticket.thumb}
-                      alt={ticket.thumb}
-                      width="35"
-                      sx={{
-                        borderRadius: "100%",
-                      }}
-                    />
-                    <Typography variant="h6">{ticket.AgentName}</Typography>
-                  </Stack>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    sx={{
-                      backgroundColor:
-                        ticket.Status === "Open"
-                          ? theme => theme.palette.success.light
-                          : ticket.Status === "Closed"
-                          ? theme => theme.palette.error.light
-                          : ticket.Status === "Pending"
-                          ? theme => theme.palette.warning.light
-                          : ticket.Status === "Moderate",
-                    }}
-                    size="small"
-                    label={ticket.Status}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Typography>{ticket.Date}</Typography>
+                  <Typography>{tipo.descricao_tipo_servico}</Typography>
                 </TableCell>
                 <TableCell align="right">
                   <Tooltip title="Delete Ticket">
-                    <IconButton
-                      onClick={() => dispatch(DeleteTicket(ticket.Id))}
-                    >
+                    <IconButton>
                       <IconTrash size="18" />
                     </IconButton>
                   </Tooltip>
