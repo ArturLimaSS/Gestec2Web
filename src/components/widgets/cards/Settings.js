@@ -15,7 +15,7 @@ const Settings = () => {
 
   return (
     <BlankCard>
-      <CardContent sx={{p: "30px"}}>
+      <CardContent sx={{ p: "30px" }}>
         <Typography variant="h5">Settings</Typography>
         <Stack spacing={2} mt={3}>
           <Stack direction="row" spacing={2}>
@@ -52,8 +52,8 @@ const Settings = () => {
           <Divider />
         </Stack>
         <Stack direction="row" justifyContent="end" spacing={2} mt={2}>
-            <Button variant="outlined" color="error">Cancel</Button>
-            <Button variant="contained" color="primary">Save</Button>
+          <Button variant="outlined" color="error">Cancel</Button>
+          <Button variant="contained" color="primary">Save</Button>
         </Stack>
       </CardContent>
     </BlankCard>

@@ -51,8 +51,11 @@ import {
   IconLockAccess,
   IconPlus,
 } from '@tabler/icons';
-
+import CellTowerIcon from '@mui/icons-material/CellTower';
+import ReorderIcon from '@mui/icons-material/Reorder';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import GroupsIcon from '@mui/icons-material/Groups';
+import ChecklistIcon from '@mui/icons-material/Checklist';
 
 import { uniqueId } from 'lodash';
 
@@ -78,13 +81,13 @@ const Menuitems = [
 
   {
     navlabel: true,
-    subheader: 'Ativos',
+    subheader: 'Gestão de Sites',
   },
 
   {
     id: uniqueId(),
     title: 'Sites',
-    icon: IconChartLine,
+    icon: CellTowerIcon,
     href: '/sites',
     children: [
       {
@@ -96,75 +99,120 @@ const Menuitems = [
       {
         id: uniqueId(),
         title: 'Lista de Sites',
-        icon: IconPlus,
+        icon: ReorderIcon,
         href: '/sites/lista',
       }
     ]
   },
   {
     navlabel: true,
+    subheader: 'Gestão de Atividades',
+  },
+  {
+    id: uniqueId(),
+    title: 'Atividades',
+    icon: AssignmentIcon,
+    href: '/atividades',
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Nova Atividade',
+        icon: IconPlus,
+        href: '/atividades/cadastro',
+      },
+      {
+        id: uniqueId(),
+        title: 'Lista de Atividades',
+        icon: ReorderIcon,
+        href: '/atividades/lista',
+      }
+    ]
+  },
+  { navlabel: true, subheader: 'Gestão de Questionaŕios' },
+  {
+    id: uniqueId(),
+    title: 'Questionários',
+    icon: ChecklistIcon,
+    href: '/questionarios'
+  },
+
+  { navlabel: true, subheader: 'Tipos de Serviços' },
+  {
+    id: uniqueId(),
+    title: 'Tipos de Serviços',
+    icon: ChecklistIcon,
+    href: '/tipos-servicos'
+  },
+
+
+  {
+    navlabel: true,
     subheader: 'Configurações',
   },
   {
     id: uniqueId(),
-    title: 'Usuários',
+    title: 'Configurações Gerais',
+    icon: Settings,
+    href: '/configuracoes',
+  },
+  {
+    id: uniqueId(),
+    title: 'Gestão de Usuários',
     icon: GroupsIcon,
-    chip: '2',
-    chipColor: 'secondary',
-    href: '/apps/contacts',
+    href: '/usuarios',
   },
-  {
-    id: uniqueId(),
-    title: 'Blog',
-    icon: IconChartDonut3,
-    href: '/apps/blog/',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Posts',
-        icon: IconPoint,
-        href: '/apps/blog/posts',
-      },
-      {
-        id: uniqueId(),
-        title: 'Detail',
-        icon: IconPoint,
-        href: '/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow',
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: 'Ecommerce',
-    icon: IconBasket,
-    href: '/apps/ecommerce/shop',
-    // children: [
-    //   {
-    //     id: uniqueId(),
-    //     title: 'Shop',
-    //     icon: IconPoint,
-    //     href: '/apps/ecommerce/shop',
-    //   },
-    //   {
-    //     id: uniqueId(),
-    //     title: 'Detail',
-    //     icon: IconPoint,
-    //     href: '/apps/ecommerce/detail/1',
-    //   },
-    //   {
-    //     id: uniqueId(),
-    //     title: 'List',
-    //     icon: IconPoint,
-    //     href: '/apps/ecommerce/eco-product-list',
-    //   },
-    //   {
-    //     id: uniqueId(),
-    //     title: 'Checkout',
-    //     icon: IconPoint,
-    //     href: '/apps/ecommerce/eco-checkout',
-    //   },
-    // ],
-  },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Blog',
+  //   icon: IconChartDonut3,
+  //   href: '/apps/blog/',
+  //   children: [
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Posts',
+  //       icon: IconPoint,
+  //       href: '/apps/blog/posts',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Detail',
+  //       icon: IconPoint,
+  //       href: '/apps/blog/detail/streaming-video-way-before-it-was-cool-go-dark-tomorrow',
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Ecommerce',
+  //   icon: IconBasket,
+  //   href: '/apps/ecommerce/shop',
+  //   // children: [
+  //   //   {
+  //   //     id: uniqueId(),
+  //   //     title: 'Shop',
+  //   //     icon: IconPoint,
+  //   //     href: '/apps/ecommerce/shop',
+  //   //   },
+  //   //   {
+  //   //     id: uniqueId(),
+  //   //     title: 'Detail',
+  //   //     icon: IconPoint,
+  //   //     href: '/apps/ecommerce/detail/1',
+  //   //   },
+  //   //   {
+  //   //     id: uniqueId(),
+  //   //     title: 'List',
+  //   //     icon: IconPoint,
+  //   //     href: '/apps/ecommerce/eco-product-list',
+  //   //   },
+  //   //   {
+  //   //     id: uniqueId(),
+  //   //     title: 'Checkout',
+  //   //     icon: IconPoint,
+  //   //     href: '/apps/ecommerce/eco-checkout',
+  //   //   },
+  //   // ],
+  // },
   // {
   //   id: uniqueId(),
   //   title: 'Chats',
@@ -177,12 +225,7 @@ const Menuitems = [
     icon: Person,
     href: '/meu-perfil',
   },
-  {
-    id: uniqueId(),
-    title: 'Configurações',
-    icon: Settings,
-    href: '/configuracoes',
-  },
+
   // {
   //   id: uniqueId(),
   //   title: 'Notes',
@@ -201,12 +244,12 @@ const Menuitems = [
   //   icon: IconMail,
   //   href: '/apps/email',
   // },
-  {
-    id: uniqueId(),
-    title: 'Tickets',
-    icon: IconTicket,
-    href: '/apps/tickets',
-  },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Tickets',
+  //   icon: IconTicket,
+  //   href: '/apps/tickets',
+  // },
   // {
   //   navlabel: true,
   //   subheader: 'Pages',
@@ -404,137 +447,137 @@ const Menuitems = [
   //   icon: IconBorderStyle2,
   //   href: '/tables/search',
   // },
-  {
-    navlabel: true,
-    subheader: 'UI',
-  },
-  {
-    id: uniqueId(),
-    title: 'Ui Components',
-    icon: IconBox,
-    href: '/ui-components/alert',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Alert',
-        icon: IconPoint,
-        href: '/ui-components/alert',
-      },
-      {
-        id: uniqueId(),
-        title: 'Accordion',
-        icon: IconPoint,
-        href: '/ui-components/accordion',
-      },
-      {
-        id: uniqueId(),
-        title: 'Avatar',
-        icon: IconPoint,
-        href: '/ui-components/avatar',
-      },
-      {
-        id: uniqueId(),
-        title: 'Chip',
-        icon: IconPoint,
-        href: '/ui-components/chip',
-      },
-      {
-        id: uniqueId(),
-        title: 'Dialog',
-        icon: IconPoint,
-        href: '/ui-components/dialog',
-      },
-      {
-        id: uniqueId(),
-        title: 'List',
-        icon: IconPoint,
-        href: '/ui-components/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Popover',
-        icon: IconPoint,
-        href: '/ui-components/popover',
-      },
-      {
-        id: uniqueId(),
-        title: 'Rating',
-        icon: IconPoint,
-        href: '/ui-components/rating',
-      },
-      {
-        id: uniqueId(),
-        title: 'Tabs',
-        icon: IconPoint,
-        href: '/ui-components/tabs',
-      },
-      {
-        id: uniqueId(),
-        title: 'Tooltip',
-        icon: IconPoint,
-        href: '/ui-components/tooltip',
-      },
-      {
-        id: uniqueId(),
-        title: 'Transfer List',
-        icon: IconPoint,
-        href: '/ui-components/transfer-list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Typography',
-        icon: IconPoint,
-        href: '/ui-components/typography',
-      },
-    ],
-  },
+  // {
+  //   navlabel: true,
+  //   subheader: 'UI',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Ui Components',
+  //   icon: IconBox,
+  //   href: '/ui-components/alert',
+  //   children: [
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Alert',
+  //       icon: IconPoint,
+  //       href: '/ui-components/alert',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Accordion',
+  //       icon: IconPoint,
+  //       href: '/ui-components/accordion',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Avatar',
+  //       icon: IconPoint,
+  //       href: '/ui-components/avatar',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Chip',
+  //       icon: IconPoint,
+  //       href: '/ui-components/chip',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Dialog',
+  //       icon: IconPoint,
+  //       href: '/ui-components/dialog',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'List',
+  //       icon: IconPoint,
+  //       href: '/ui-components/list',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Popover',
+  //       icon: IconPoint,
+  //       href: '/ui-components/popover',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Rating',
+  //       icon: IconPoint,
+  //       href: '/ui-components/rating',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Tabs',
+  //       icon: IconPoint,
+  //       href: '/ui-components/tabs',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Tooltip',
+  //       icon: IconPoint,
+  //       href: '/ui-components/tooltip',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Transfer List',
+  //       icon: IconPoint,
+  //       href: '/ui-components/transfer-list',
+  //     },
+  //     {
+  //       id: uniqueId(),
+  //       title: 'Typography',
+  //       icon: IconPoint,
+  //       href: '/ui-components/typography',
+  //     },
+  //   ],
+  // },
 
-  {
-    navlabel: true,
-    subheader: 'Charts',
-  },
-  {
-    id: uniqueId(),
-    title: 'Line',
-    icon: IconChartLine,
-    href: '/charts/line-chart',
-  },
-  {
-    id: uniqueId(),
-    title: 'Gredient',
-    icon: IconChartArcs,
-    href: '/charts/gredient-chart',
-  },
-  {
-    id: uniqueId(),
-    title: 'Area',
-    icon: IconChartArea,
-    href: '/charts/area-chart',
-  },
-  {
-    id: uniqueId(),
-    title: 'Candlestick',
-    icon: IconChartCandle,
-    href: '/charts/candlestick-chart',
-  },
-  {
-    id: uniqueId(),
-    title: 'Column',
-    icon: IconChartDots,
-    href: '/charts/column-chart',
-  },
-  {
-    id: uniqueId(),
-    title: 'Doughtnut & Pie',
-    icon: IconChartDonut3,
-    href: '/charts/doughnut-pie-chart',
-  },
-  {
-    id: uniqueId(),
-    title: 'RadialBar & Radar',
-    icon: IconChartRadar,
-    href: '/charts/radialbar-chart',
-  },
+  // {
+  //   navlabel: true,
+  //   subheader: 'Charts',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Line',
+  //   icon: IconChartLine,
+  //   href: '/charts/line-chart',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Gredient',
+  //   icon: IconChartArcs,
+  //   href: '/charts/gredient-chart',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Area',
+  //   icon: IconChartArea,
+  //   href: '/charts/area-chart',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Candlestick',
+  //   icon: IconChartCandle,
+  //   href: '/charts/candlestick-chart',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Column',
+  //   icon: IconChartDots,
+  //   href: '/charts/column-chart',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Doughtnut & Pie',
+  //   icon: IconChartDonut3,
+  //   href: '/charts/doughnut-pie-chart',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'RadialBar & Radar',
+  //   icon: IconChartRadar,
+  //   href: '/charts/radialbar-chart',
+  // },
   // {
   //   navlabel: true,
   //   subheader: 'Auth',

@@ -45,57 +45,6 @@ const WidgetCards = Loadable(lazy(() => import('../views/widgets/cards/WidgetCar
 const WidgetBanners = Loadable(lazy(() => import('../views/widgets/banners/WidgetBanners')));
 const WidgetCharts = Loadable(lazy(() => import('../views/widgets/charts/WidgetCharts')));
 
-// form elements
-const MuiAutoComplete = Loadable(
-  lazy(() => import('../views/forms/form-elements/MuiAutoComplete')),
-);
-const MuiButton = Loadable(lazy(() => import('../views/forms/form-elements/MuiButton')));
-const MuiCheckbox = Loadable(lazy(() => import('../views/forms/form-elements/MuiCheckbox')));
-const MuiRadio = Loadable(lazy(() => import('../views/forms/form-elements/MuiRadio')));
-const MuiSlider = Loadable(lazy(() => import('../views/forms/form-elements/MuiSlider')));
-const MuiDateTime = Loadable(lazy(() => import('../views/forms/form-elements/MuiDateTime')));
-const MuiSwitch = Loadable(lazy(() => import('../views/forms/form-elements/MuiSwitch')));
-
-// form layout
-const FormLayouts = Loadable(lazy(() => import('../views/forms/FormLayouts')));
-const FormCustom = Loadable(lazy(() => import('../views/forms/FormCustom')));
-const FormWizard = Loadable(lazy(() => import('../views/forms/FormWizard')));
-const FormValidation = Loadable(lazy(() => import('../views/forms/FormValidation')));
-const QuillEditor = Loadable(lazy(() => import('../views/forms/quill-editor/QuillEditor')));
-const FormHorizontal = Loadable(lazy(() => import('../views/forms/FormHorizontal')));
-const FormVertical = Loadable(lazy(() => import('../views/forms/FormVertical')));
-
-// tables
-const BasicTable = Loadable(lazy(() => import('../views/tables/BasicTable')));
-const CollapsibleTable = Loadable(lazy(() => import('../views/tables/CollapsibleTable')));
-const EnhancedTable = Loadable(lazy(() => import('../views/tables/EnhancedTable')));
-const FixedHeaderTable = Loadable(lazy(() => import('../views/tables/FixedHeaderTable')));
-const PaginationTable = Loadable(lazy(() => import('../views/tables/PaginationTable')));
-const SearchTable = Loadable(lazy(() => import('../views/tables/SearchTable')));
-
-// chart
-const LineChart = Loadable(lazy(() => import('../views/charts/LineChart')));
-const GredientChart = Loadable(lazy(() => import('../views/charts/GredientChart')));
-const DoughnutChart = Loadable(lazy(() => import('../views/charts/DoughnutChart')));
-const AreaChart = Loadable(lazy(() => import('../views/charts/AreaChart')));
-const ColumnChart = Loadable(lazy(() => import('../views/charts/ColumnChart')));
-const CandlestickChart = Loadable(lazy(() => import('../views/charts/CandlestickChart')));
-const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChart')));
-
-// ui
-const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
-const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
-const MuiAvatar = Loadable(lazy(() => import('../views/ui-components/MuiAvatar')));
-const MuiChip = Loadable(lazy(() => import('../views/ui-components/MuiChip')));
-const MuiDialog = Loadable(lazy(() => import('../views/ui-components/MuiDialog')));
-const MuiList = Loadable(lazy(() => import('../views/ui-components/MuiList')));
-const MuiPopover = Loadable(lazy(() => import('../views/ui-components/MuiPopover')));
-const MuiRating = Loadable(lazy(() => import('../views/ui-components/MuiRating')));
-const MuiTabs = Loadable(lazy(() => import('../views/ui-components/MuiTabs')));
-const MuiTooltip = Loadable(lazy(() => import('../views/ui-components/MuiTooltip')));
-const MuiTransferList = Loadable(lazy(() => import('../views/ui-components/MuiTransferList')));
-const MuiTypography = Loadable(lazy(() => import('../views/ui-components/MuiTypography')));
-
 // authentication
 const Login = Loadable(lazy(() => import('../views/authentication/auth1/Login')));
 const Login2 = Loadable(lazy(() => import('../views/authentication/auth2/Login2')));

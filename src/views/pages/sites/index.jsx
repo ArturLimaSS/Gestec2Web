@@ -31,7 +31,7 @@ const Sites = props => {
 
   useEffect(() => {
     handleFetchListaSites();
-  }, []);
+  }, [empresa]);
 
   const BCrumb = [
     {

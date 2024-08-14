@@ -7,6 +7,7 @@ import { toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
 import NavItem from './NavItem';
 import NavCollapse from './NavCollapse';
 import NavGroup from './NavGroup/NavGroup';
+import { Person, Settings } from '@mui/icons-material';
 
 const SidebarItems = () => {
   const { pathname } = useLocation();
@@ -18,7 +19,7 @@ const SidebarItems = () => {
   const dispatch = useDispatch();
 
   return (
-    <Box sx={{ px: 3 }}>
+    <Box sx={{ px: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
         {Menuitems.map((item, index) => {
           // {/********SubHeader**********/}
@@ -53,7 +54,22 @@ const SidebarItems = () => {
             );
           }
         })}
+
       </List>
+      {/* <NavItem
+        item={{
+          title: 'Configurações Gerais',
+          icon: Settings,
+          href: '/configuracoes',
+        }}
+        pathDirect={'/configuracoes'}
+        onClick={() => dispatch(toggleMobileSidebar())}
+      /> */}
+
+      {/* Pra fazer: 
+
+Opção de configuração que abre drawer  com menu de gestão de sites,  questionários, usuários etc. 
+*/}
     </Box>
   );
 };

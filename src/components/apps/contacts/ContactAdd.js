@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -9,128 +9,133 @@ import {
   DialogContent,
   DialogContentText,
   Grid,
+  DialogActions,
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { addContact } from '../../../store/apps/contacts/ContactSlice';
 import user1 from '../../../assets/images/profile/user-1.jpg';
+import { useUserStore } from '../../../zustand/Usuarios/UsuariosStore';
+import { useAuthStore } from '../../../zustand/Auth/AuthStore';
 
 const ContactAdd = () => {
-  const dispatch = useDispatch();
-  const id = useSelector((state) => state.contactsReducer.contacts.length + 1);
   const [modal, setModal] = React.useState(false);
+
+  const { createUser } = useUserStore((store) => ({
+    createUser: store.createUser
+  }))
 
   const toggle = () => {
     setModal(!modal);
   };
 
-  const [values, setValues] = React.useState({
-    firstname: '',
-    lastname: '',
-    department: '',
-    company: '',
-    phone: '',
-    email: '',
-    address: '',
-    notes: '',
+  const [userData, setUserData] = useState({
+    "email": "",
+    "name": "",
+    "cpf": "",
+    "password": "",
+    "cargo_id": "",
+    "empresa_id": ""
   });
 
-  const handleSubmit = (e) => {
+  const { empresa } = useAuthStore((store) => ({
+    empresa: store.empresa
+  }))
+
+  useEffect(() => {
+    setUserData({ ...userData, empresa_id: empresa.empresa_id })
+  }, [empresa])
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(
-      addContact(
-        id,
-        values.firstname,
-        values.lastname,
-        user1,
-        values.department,
-        values.company,
-        values.phone,
-        values.email,
-        values.address,
-        values.notes,
-      ),
-    );
-    setModal(!modal);
+    const response = await createUser(userData)
+    if (response.status == 201) {
+      alert("Usuário cadastrado com sucesso!");
+      toggle()
+    } else {
+      alert("erro")
+    }
   };
 
   return (
     <>
       <Box p={3} pb={1}>
         <Button color="primary" variant="contained" fullWidth onClick={toggle}>
-          Add New Contact
+          Novo usuário
         </Button>
       </Box>
       <Dialog
         open={modal}
         onClose={toggle}
+        component={'form'}
+        onSubmit={handleSubmit}
         maxWidth="sm"
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title" variant="h5">
-          {'Add New Contact'}
+          {'Novo usuário'}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Lets add new contact for your application. fill the all field and
-            <br /> click on submit button.
-          </DialogContentText>
           <Box mt={3}>
-            <form onSubmit={handleSubmit}>
+            <>
               <Grid spacing={3} container>
                 <Grid item xs={12} lg={6}>
-                  <FormLabel>FirstName</FormLabel>
+                  <FormLabel>Nome</FormLabel>
                   <TextField
-                    id="firstname"
+                    id="name"
                     size="small"
                     variant="outlined"
+                    type='text'
                     fullWidth
-                    value={values.firstname}
-                    onChange={(e) => setValues({ ...values, firstname: e.target.value })}
+                    value={userData.name}
+                    onChange={(e) => setUserData({ ...userData, name: e.target.value })}
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <FormLabel>LastName</FormLabel>
+                  <FormLabel>CPF/CNPJ</FormLabel>
                   <TextField
-                    id="lastname"
+                    id="cpf"
                     size="small"
                     variant="outlined"
                     fullWidth
-                    value={values.lastname}
-                    onChange={(e) => setValues({ ...values, lastname: e.target.value })}
+                    value={userData.cpf}
+                    onChange={(e) => setUserData({ ...userData, cpf: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={12} lg={6}>
-                  <FormLabel>Department</FormLabel>
+                <Grid item xs={12} lg={12}>
+                  <FormLabel>E-mail</FormLabel>
                   <TextField
-                    id="department"
+                    id="email"
                     size="small"
                     variant="outlined"
+                    type='email'
                     fullWidth
-                    value={values.department}
-                    onChange={(e) => setValues({ ...values, department: e.target.value })}
+                    value={userData.email}
+                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                   />
                 </Grid>
+
                 <Grid item xs={12} lg={6}>
-                  <FormLabel>Company</FormLabel>
+                  <FormLabel>Cargo</FormLabel>
                   <TextField
                     id="company"
                     size="small"
                     variant="outlined"
                     fullWidth
-                    value={values.company}
-                    onChange={(e) => setValues({ ...values, company: e.target.value })}
+                    value={userData.cargo_id}
+                    onChange={(e) => setUserData({ ...userData, cargo_id: e.target.value })}
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
-                  <FormLabel>Phone</FormLabel>
+                  <FormLabel>Senha</FormLabel>
                   <TextField
-                    id="phone"
+                    id="senha"
                     size="small"
                     variant="outlined"
+                    type='password'
                     fullWidth
-                    value={values.phone}
-                    onChange={(e) => setValues({ ...values, phone: e.target.value })}
+                    value={userData.password}
+                    onChange={(e) => setUserData({ ...userData, password: e.target.value })}
                   />
                 </Grid>
                 <Grid item xs={12} lg={6}>
@@ -142,55 +147,23 @@ const ContactAdd = () => {
                     size="small"
                     variant="outlined"
                     fullWidth
-                    value={values.email}
-                    onChange={(e) => setValues({ ...values, email: e.target.value })}
+                    value={userData.email}
+                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                   />
-                </Grid>
-                <Grid item xs={12} lg={12}>
-                  <FormLabel>Address</FormLabel>
-                  <TextField
-                    id="address"
-                    size="small"
-                    multiline
-                    rows="3"
-                    variant="outlined"
-                    fullWidth
-                    value={values.address}
-                    onChange={(e) => setValues({ ...values, address: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={12}>
-                  <FormLabel>Notes</FormLabel>
-                  <TextField
-                    id="notes"
-                    size="small"
-                    multiline
-                    rows="4"
-                    variant="outlined"
-                    fullWidth
-                    value={values.notes}
-                    onChange={(e) => setValues({ ...values, notes: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={12}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ mr: 1 }}
-                    type="submit"
-                    disabled={values.firstname.length === 0 || values.notes.length === 0}
-                  >
-                    Submit
-                  </Button>
-                  <Button variant="contained" color="error" onClick={toggle}>
-                    Cancel
-                  </Button>
                 </Grid>
               </Grid>
-            </form>
+            </>
           </Box>
         </DialogContent>
-      </Dialog>
+        <DialogActions>
+          <Button onClick={toggle} color="primary">
+            Cancelar
+          </Button>
+          <Button type="submit" color="primary">
+            Salvar
+          </Button>
+        </DialogActions>
+      </Dialog >
     </>
   );
 };

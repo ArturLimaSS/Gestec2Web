@@ -2,7 +2,7 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
-import Configuracoes from '../views/pages/configuracoes/Configuracoes';
+
 
 
 /* ***Layouts**** */
@@ -48,24 +48,21 @@ const WidgetBanners = Loadable(lazy(() => import('../views/widgets/banners/Widge
 const WidgetCharts = Loadable(lazy(() => import('../views/widgets/charts/WidgetCharts')));
 
 // form elements
-const MuiAutoComplete = Loadable(
-  lazy(() => import('../views/forms/form-elements/MuiAutoComplete')),
-);
-const MuiButton = Loadable(lazy(() => import('../views/forms/form-elements/MuiButton')));
-const MuiCheckbox = Loadable(lazy(() => import('../views/forms/form-elements/MuiCheckbox')));
-const MuiRadio = Loadable(lazy(() => import('../views/forms/form-elements/MuiRadio')));
-const MuiSlider = Loadable(lazy(() => import('../views/forms/form-elements/MuiSlider')));
-const MuiDateTime = Loadable(lazy(() => import('../views/forms/form-elements/MuiDateTime')));
-const MuiSwitch = Loadable(lazy(() => import('../views/forms/form-elements/MuiSwitch')));
+// const MuiButton = Loadable(lazy(() => import('../views/pages/forms/form-elements/MuiButton')));
+// const MuiCheckbox = Loadable(lazy(() => import('../views/pages/forms/form-elements/MuiCheckbox')));
+// const MuiRadio = Loadable(lazy(() => import('../views/pages/forms/form-elements/MuiRadio')));
+// const MuiSlider = Loadable(lazy(() => import('../views/pages/forms/form-elements/MuiSlider')));
+// const MuiDateTime = Loadable(lazy(() => import('../views/pages/forms/form-elements/MuiDateTime')));
+// const MuiSwitch = Loadable(lazy(() => import('../views/pages/forms/form-elements/MuiSwitch')));
 
 // form layout
-const FormLayouts = Loadable(lazy(() => import('../views/forms/FormLayouts')));
-const FormCustom = Loadable(lazy(() => import('../views/forms/FormCustom')));
-const FormWizard = Loadable(lazy(() => import('../views/forms/FormWizard')));
-const FormValidation = Loadable(lazy(() => import('../views/forms/FormValidation')));
-const QuillEditor = Loadable(lazy(() => import('../views/forms/quill-editor/QuillEditor')));
-const FormHorizontal = Loadable(lazy(() => import('../views/forms/FormHorizontal')));
-const FormVertical = Loadable(lazy(() => import('../views/forms/FormVertical')));
+const FormLayouts = Loadable(lazy(() => import('../views/pages/forms/FormLayouts')));
+const FormCustom = Loadable(lazy(() => import('../views/pages/forms/FormCustom')));
+const FormWizard = Loadable(lazy(() => import('../views/pages/forms/FormWizard')));
+const FormValidation = Loadable(lazy(() => import('../views/pages/forms/FormValidation')));
+const QuillEditor = Loadable(lazy(() => import('../views/pages/forms/quill-editor/QuillEditor')));
+const FormHorizontal = Loadable(lazy(() => import('../views/pages/forms/FormHorizontal')));
+const FormVertical = Loadable(lazy(() => import('../views/pages/forms/FormVertical')));
 
 // tables
 const BasicTable = Loadable(lazy(() => import('../views/tables/BasicTable')));
@@ -101,6 +98,11 @@ const MuiTypography = Loadable(lazy(() => import('../views/ui-components/MuiTypo
 const Sites = Loadable(lazy(() => import('../views/pages/sites')));
 const SitesCadastro = Loadable(lazy(() => import('../views/pages/sites/cadastro')));
 
+
+
+const Configuracoes = Loadable(lazy(() => import('../views/pages/configuracoes/Configuracoes')));
+const Usuarios = Loadable(lazy(() => import("../views/apps/usuarios/Usuarios")));
+
 // authentication
 const Login = Loadable(lazy(() => import('../views/authentication/auth1/Login')));
 const Login2 = Loadable(lazy(() => import('../views/authentication/auth2/Login2')));
@@ -118,6 +120,10 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
 
+const Atividades = Loadable(lazy(() => import("../views/pages/Atividades/Atividades")))
+const Questionarios = Loadable(lazy(() => import("../views/pages/Questionarios/Questionarios")))
+const TiposServicos = Loadable(lazy(() => import("../views/pages/TiposServicos/TiposServicos")))
+
 const Router = [
   {
     path: '/',
@@ -125,7 +131,11 @@ const Router = [
     children: [
       { path: '/sites/lista', element: <Sites /> },
       { path: '/sites/cadastro', element: <SitesCadastro /> },
+      { path: '/atividades/lista', element: <Atividades /> },
+      { path: '/questionarios', element: <Questionarios /> },
       { path: '/configuracoes', element: <Configuracoes /> },
+      { path: '/tipos-servicos', element: <TiposServicos /> },
+      { path: '/usuarios', element: <Usuarios /> },
       { path: '/dashboards/modern', element: <ModernDash /> },
       { path: '/dashboards/ecommerce', element: <EcommerceDash /> },
       { path: '/apps/chats', element: <Chats /> },
@@ -133,7 +143,6 @@ const Router = [
       { path: '/apps/calendar', element: <Calendar /> },
       { path: '/apps/email', element: <Email /> },
       { path: '/apps/tickets', element: <Tickets /> },
-      { path: '/apps/contacts', element: <Contacts /> },
       { path: '/apps/ecommerce/shop', element: <Ecommerce /> },
       { path: '/apps/blog/posts', element: <Blog /> },
       { path: '/apps/blog/detail/:id', element: <BlogDetail /> },
@@ -149,21 +158,6 @@ const Router = [
       { path: '/pages/pricing', element: <Pricing /> },
       { path: '/pages/account-settings', element: <AccountSetting /> },
       { path: '/pages/faq', element: <Faq /> },
-      { path: '/forms/form-elements/autocomplete', element: <MuiAutoComplete /> },
-      { path: '/forms/form-elements/button', element: <MuiButton /> },
-      { path: '/forms/form-elements/checkbox', element: <MuiCheckbox /> },
-      { path: '/forms/form-elements/radio', element: <MuiRadio /> },
-      { path: '/forms/form-elements/slider', element: <MuiSlider /> },
-      { path: '/forms/form-elements/date-time', element: <MuiDateTime /> },
-      { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      { path: '/forms/quill-editor', element: <QuillEditor /> },
-      { path: '/forms/form-layouts', element: <FormLayouts /> },
-      { path: '/forms/form-horizontal', element: <FormHorizontal /> },
-      { path: '/forms/form-vertical', element: <FormVertical /> },
-      { path: '/forms/form-custom', element: <FormCustom /> },
-      { path: '/forms/form-wizard', element: <FormWizard /> },
-      { path: '/forms/form-validation', element: <FormValidation /> },
       { path: '/tables/basic', element: <BasicTable /> },
       { path: '/tables/collapsible', element: <CollapsibleTable /> },
       { path: '/tables/enhanced', element: <EnhancedTable /> },

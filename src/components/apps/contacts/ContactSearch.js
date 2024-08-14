@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, Fab, TextField, InputAdornment } from '@mui/material';
 
 import { SearchContact } from '../../../store/apps/contacts/ContactSlice';
 import { IconMenu2, IconSearch } from '@tabler/icons';
+import { useUserStore } from '../../../zustand/Usuarios/UsuariosStore';
 
 
 const ContactSearch = ({ onClick }) => {
-  const searchTerm = useSelector((state) => state.contactsReducer.contactSearch);
-  const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const { filterUser } = useUserStore(store => store)
+
+  useEffect(() => {
+    filterUser(searchTerm)
+  }, [searchTerm])
+
 
   return (
     <Box display="flex" sx={{ p: 2 }}>
@@ -32,9 +39,9 @@ const ContactSearch = ({ onClick }) => {
         fullWidth
         size="small"
         value={searchTerm}
-        placeholder="Search Contacts"
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Procurar usuários"
         variant="outlined"
-        onChange={(e) => dispatch(SearchContact(e.target.value))}
       />
     </Box>
   );
