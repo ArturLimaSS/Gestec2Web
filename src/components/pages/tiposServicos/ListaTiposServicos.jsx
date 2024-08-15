@@ -43,7 +43,9 @@ const ListaTiposServicos = () => {
   }));
 
   useEffect(() => {
-    fetchTiposServicos(empresa.empresa_id);
+    if (empresa) {
+      fetchTiposServicos(empresa.empresa_id);
+    }
   }, [empresa]);
 
   return (
