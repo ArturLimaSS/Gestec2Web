@@ -5,6 +5,8 @@ import Loadable from '../layouts/full/shared/loadable/Loadable';
 
 
 
+
+
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -124,6 +126,8 @@ const Atividades = Loadable(lazy(() => import("../views/pages/Atividades/Ativida
 const Questionarios = Loadable(lazy(() => import("../views/pages/Questionarios/Questionarios")))
 const TiposServicos = Loadable(lazy(() => import("../views/pages/TiposServicos/TiposServicos")))
 
+const QuestionarioCadastro = Loadable(lazy(() => import("../views/pages/Questionarios/Cadastro/Cadastro")));
+
 const Router = [
   {
     path: '/',
@@ -132,7 +136,8 @@ const Router = [
       { path: '/sites/lista', element: <Sites /> },
       { path: '/sites/cadastro', element: <SitesCadastro /> },
       { path: '/atividades/lista', element: <Atividades /> },
-      { path: '/questionarios', element: <Questionarios /> },
+      { path: '/questionarios/lista', element: <Questionarios /> },
+      { path: '/questionarios/cadastro', element: <QuestionarioCadastro /> },
       { path: '/configuracoes', element: <Configuracoes /> },
       { path: '/tipos-servicos', element: <TiposServicos /> },
       { path: '/usuarios', element: <Usuarios /> },

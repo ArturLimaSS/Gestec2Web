@@ -8,7 +8,7 @@ import {
   Stack,
   Divider,
 } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import CustomCheckbox from '../../../components/forms/theme-elements/CustomCheckbox';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
@@ -18,22 +18,25 @@ import { ReactComponent as LightLogoIcon } from "src/assets/images/logos/light-l
 
 import AuthSocialButtons from './AuthSocialButtons';
 import { useAuthStore } from '../../../zustand/Auth/AuthStore';
-// import { Password } from '@mui/icons-material';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+  const navigate = useNavigate();
   const [authData, setAuthData] = useState({
     email: "",
     password: ""
   });
 
-  const { authenticate } = useAuthStore(store => ({
+  const { authenticate, checkLogin } = useAuthStore(store => ({
     authenticate: store.authenticate,
+    checkLogin: store.checkLogin
   }))
 
   const handleLogin = async (e) => {
     e.preventDefault();
     const response = await authenticate(authData);
-    console.log(response)
+    if (response.status == "200") {
+      checkLogin(navigate);
+    }
   }
 
   return (

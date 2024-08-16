@@ -18,7 +18,7 @@ export const useAuthStore = create((set) => {
         const response = await api.post('/auth/login', credentials);
         localStorage.setItem('token', response.data.token);
         set({ user: response.data.user, error: null, isLogged: true, status: 'succeeded' });
-        window.location.reload;
+        return response
       } catch (error) {
         set({ error: error.response?.data?.message || 'Error occurred', status: 'failed' });
       }

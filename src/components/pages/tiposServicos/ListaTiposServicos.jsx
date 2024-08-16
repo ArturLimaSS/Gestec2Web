@@ -38,13 +38,16 @@ const ListaTiposServicos = () => {
     })
   );
 
-  const { empresa } = useAuthStore(store => ({
+  const { empresa, checkLogin } = useAuthStore(store => ({
     empresa: store.empresa,
+    checkLogin: store.checkLogin,
   }));
 
   useEffect(() => {
-    if (empresa) {
+    if (empresa.empresa_id) {
       fetchTiposServicos(empresa.empresa_id);
+    } else {
+      checkLogin();
     }
   }, [empresa]);
 

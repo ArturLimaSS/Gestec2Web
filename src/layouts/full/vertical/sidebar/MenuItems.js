@@ -133,7 +133,21 @@ const Menuitems = [
     id: uniqueId(),
     title: 'Questionários',
     icon: ChecklistIcon,
-    href: '/questionarios'
+    href: '/questionarios',
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Novo Questionário',
+        icon: IconPlus,
+        href: '/questionarios/cadastro',
+      },
+      {
+        id: uniqueId(),
+        title: 'Lista de Questionários',
+        icon: ReorderIcon,
+        href: '/questionarios/lista',
+      }
+    ]
   },
 
   { navlabel: true, subheader: 'Tipos de Serviços' },
