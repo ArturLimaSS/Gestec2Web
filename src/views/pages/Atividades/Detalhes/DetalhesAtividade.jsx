@@ -24,6 +24,7 @@ import {
 	FormGroup,
 	RadioGroup,
 	FormLabel,
+	Fab,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import BlankCard from "../../../../components/shared/BlankCard";
@@ -38,6 +39,7 @@ import { Link } from "react-router-dom";
 import PageContainer from "../../../../components/container/PageContainer";
 import Breadcrumb from "../../../../layouts/full/shared/breadcrumb/Breadcrumb";
 import { useAtividadesStore } from "../../../../zustand/Atividades/AtividadesStore";
+import { useRespostaStore } from "../../../../zustand/Respostas/RespostaStore";
 
 const DetalhesAtividade = () => {
 	const location = useLocation();
@@ -72,6 +74,25 @@ const DetalhesAtividade = () => {
 		perguntas: store.perguntas,
 	}));
 
+	const { fetchRespostas, respostas, updateResposta } = useRespostaStore(store => ({
+		fetchRespostas: store.fetchRespostas,
+		respostas: store.respostas,
+		updateResposta: store.updateResposta,
+	}));
+
+	const [tempRespostas, setTempRespostas] = useState([]);
+	useEffect(() => {
+		setTempRespostas(respostas);
+	}, [respostas]);
+
+	const handleUpdateTempRespostas = (pergunta, value) => {
+		setTempRespostas(tempRespostas.map(r => (r.pergunta_id == pergunta.pergunta_id ? { ...r, resposta: value } : r)));
+	};
+
+	useEffect(() => {
+		console.log(tempRespostas);
+	}, [tempRespostas]);
+
 	const BCrumb = [
 		{
 			to: "/atividades/lista",
@@ -87,12 +108,21 @@ const DetalhesAtividade = () => {
 			getQuestionario(atividade.questionario_id);
 			fetchTarefas(atividade.questionario_id);
 			fetchPerguntas(atividade.questionario_id);
+			fetchRespostas(atividade.atividade_id);
 			fetchTiposServicos();
 		}
 	}, [atividade.questionario_id]);
 
+	const handleAtualizaRespostas = () => {
+		updateResposta(tempRespostas);
+	};
+
 	return (
 		<>
+			<Fab onClick={handleAtualizaRespostas} color={"success"} variant="extended" sx={{ background: "#66bb6a", borderRadius: "10px", position: "fixed", right: "25px", bottom: "25px" }}>
+				<Save sx={{ mr: 1 }} />
+				<Typography>Salvar</Typography>
+			</Fab>
 			<PageContainer title={"Atividade"} description="Gestão de Atividades">
 				<Breadcrumb title={atividade.atividade_nome} items={BCrumb} />
 				<Box sx={{ mt: 3 }}>
@@ -145,23 +175,37 @@ const DetalhesAtividade = () => {
 											{perguntas &&
 												perguntas.map((pergunta, index) => {
 													if (pergunta.tarefa_id === tarefa.tarefa_id) {
-														if (pergunta.tipo_resposta == "text") {
+														const respostaAtual = tempRespostas.find(res => res.pergunta_id === pergunta.pergunta_id) || {};
+
+														if (pergunta.tipo_resposta === "text" || pergunta.tipo_resposta === "number") {
 															return (
-																<>
-																	<TextField label={pergunta.pergunta} fullWidth></TextField>
+																<div key={index}>
+																	<TextField
+																		value={respostaAtual.resposta || ""}
+																		onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																		label={pergunta.pergunta}
+																		fullWidth
+																		type={pergunta.tipo_resposta === "number" ? "number" : "text"}
+																	/>
 																	<Divider />
-																</>
+																</div>
 															);
 														}
 
-														if (pergunta.tipo_resposta == "select") {
+														if (pergunta.tipo_resposta === "select") {
 															return (
-																<FormControl fullWidth>
-																	<InputLabel id="ref_pergunta_id">{pergunta.pergunta}</InputLabel>
-																	<Select fullWidth labelId="ref_pergunta_id" label={pergunta.pergunta}>
+																<FormControl fullWidth key={index}>
+																	<InputLabel id={`label-${pergunta.pergunta_id}`}>{pergunta.pergunta}</InputLabel>
+																	<Select
+																		value={respostaAtual.resposta || ""}
+																		onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																		fullWidth
+																		labelId={`label-${pergunta.pergunta_id}`}
+																		label={pergunta.pergunta}
+																	>
 																		<MenuItem value="">Selecione</MenuItem>
-																		{JSON.parse(pergunta.opcoes).map((opcao, index) => (
-																			<MenuItem key={index} value={opcao}>
+																		{JSON.parse(pergunta.opcoes).map((opcao, idx) => (
+																			<MenuItem key={idx} value={opcao}>
 																				{opcao}
 																			</MenuItem>
 																		))}
@@ -170,42 +214,45 @@ const DetalhesAtividade = () => {
 															);
 														}
 
-														if (pergunta.tipo_resposta == "checkbox") {
+														if (pergunta.tipo_resposta === "checkbox") {
 															return (
-																<FormControl>
+																<FormControl key={index}>
 																	<FormLabel>{pergunta.pergunta}</FormLabel>
-																	<FormGroup fullWidth>
-																		{JSON.parse(pergunta.opcoes).map((opcao, index) => (
-																			<FormControlLabel label={opcao} control={<Checkbox />} key={index} value={opcao} />
-																		))}
+																	<FormGroup>
+																		{JSON.parse(pergunta.opcoes).map((opcao, idx) => {
+																			console.log(pergunta.pergunta);
+																			console.log(respostaAtual.resposta);
+																			console.log(opcao);
+																			return (
+																				<FormControlLabel
+																					key={idx}
+																					control={<Checkbox checked={respostaAtual.resposta == opcao} />}
+																					label={opcao}
+																					onChange={e => handleUpdateTempRespostas(pergunta, opcao, e.target.checked)}
+																				/>
+																			);
+																		})}
 																	</FormGroup>
 																</FormControl>
 															);
 														}
 
-														if (pergunta.tipo_resposta == "number") {
+														if (pergunta.tipo_resposta === "radio") {
 															return (
-																<>
-																	<TextField type="number" label={pergunta.pergunta} fullWidth></TextField>
-																	<Divider />
-																</>
-															);
-														}
-
-														if (pergunta.tipo_resposta == "radio") {
-															return (
-																<>
-																	<FormControl>
-																		<FormLabel>{pergunta.pergunta}</FormLabel>
-																		<RadioGroup fullWidth>
-																			<FormControlLabel label={"Sim"} control={<Radio />} value={"Sim"} />
-																			<FormControlLabel label={"Não"} control={<Radio />} value={"Não"} />
-																		</RadioGroup>
-																	</FormControl>
-																</>
+																<FormControl key={index}>
+																	<FormLabel>{pergunta.pergunta}</FormLabel>
+																	<RadioGroup
+																		value={respostaAtual.resposta || ""}
+																		onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																	>
+																		<FormControlLabel value="Sim" control={<Radio />} label="Sim" />
+																		<FormControlLabel value="Não" control={<Radio />} label="Não" />
+																	</RadioGroup>
+																</FormControl>
 															);
 														}
 													}
+													return null; // Certifique-se de retornar null caso a pergunta não corresponda à tarefa
 												})}
 										</CardContent>
 									</BlankCard>
@@ -221,7 +268,7 @@ const DetalhesAtividade = () => {
 									}}
 								>
 									<Button variant="contained" color="success" startIcon={<Save />}>
-										Finalizar Cadastro de Questionário
+										Finalizar Atividade
 									</Button>
 								</CardContent>
 							</BlankCard>
