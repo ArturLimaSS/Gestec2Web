@@ -3,27 +3,23 @@ import PageContainer from "../../../components/container/PageContainer";
 import TicketListing from "../../../components/apps/tickets/TicketListing";
 import TicketFilter from "../../../components/apps/tickets/TicketFilter";
 import ChildCard from "src/components/shared/ChildCard";
+import ListaAtividades from "../../../components/atividades/Lista/ListaAtividades";
 
 const BCrumb = [
-  {
-    to: "/",
-    title: "Home",
-  },
-  {
-    title: "Tickets",
-  },
+	{
+		title: "Gestão de Atividades",
+	},
 ];
 
 const Atividades = () => {
-  return (
-    <PageContainer title="Tickets App" description="this is Note page">
-      <Breadcrumb title="Tickets app" items={BCrumb} />
-      <ChildCard>
-        <TicketFilter />
-        <TicketListing />
-      </ChildCard>
-    </PageContainer>
-  );
+	return (
+		<PageContainer title="Gestão de Atividades" description="Gestão de Atividades">
+			<Breadcrumb title="Gestão de Atividades" items={BCrumb} />
+			<ChildCard>
+				<ListaAtividades />
+			</ChildCard>
+		</PageContainer>
+	);
 };
 
 export default Atividades;

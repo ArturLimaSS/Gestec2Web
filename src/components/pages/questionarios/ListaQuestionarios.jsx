@@ -1,195 +1,138 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Box,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  Typography,
-  TableBody,
-  IconButton,
-  Chip,
-  Stack,
-  Avatar,
-  Tooltip,
-  TextField,
-  Pagination,
-  TableContainer,
-  Button,
-  Grid,
-  Divider,
+	Box,
+	Table,
+	TableHead,
+	TableRow,
+	TableCell,
+	Typography,
+	TableBody,
+	IconButton,
+	Chip,
+	Stack,
+	Avatar,
+	Tooltip,
+	TextField,
+	Pagination,
+	TableContainer,
+	Button,
+	Grid,
+	Divider,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
+	Dialog,
+	DialogTitle,
 } from "@mui/material";
-import {
-  fetchTickets,
-  DeleteTicket,
-  SearchTicket,
-} from "../../../store/apps/tickets/TicketSlice";
+import { fetchTickets, DeleteTicket, SearchTicket } from "../../../store/apps/tickets/TicketSlice";
 import { IconTrash } from "@tabler/icons";
-import { QuestionarioCadastro } from "./Cadastro/Cadastro";
+import { useQuestionarioStore } from "../../../zustand/Questionario/QuestionarioStore";
+import { useAuthStore } from "../../../zustand/Auth/AuthStore";
+import { Edit } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const ListaQuestionarios = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchTickets());
-  }, [dispatch]);
+	const { questionarios, fetchQuestionarios, deletaQuestionario } = useQuestionarioStore(store => store);
+	const { empresa } = useAuthStore(store => ({
+		empresa: store.empresa,
+	}));
 
-  const getVisibleTickets = (tickets, filter, ticketSearch) => {
-    switch (filter) {
-      case "total_tickets":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
+	useEffect(() => {
+		fetchQuestionarios(empresa.empresa_id);
+	}, []);
 
-      case "Pending":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.Status === "Pending" &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
+	const [selectedQuestionario, setSelectedQuestionario] = useState(null);
 
-      case "Closed":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.Status === "Closed" &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
+	const [openDialog, setOpenDialog] = useState(false);
+	const handleOpenDialog = questionario_id => {
+		setOpenDialog(true);
+		setSelectedQuestionario(questionario_id);
+	};
 
-      case "Open":
-        return tickets.filter(
-          c =>
-            !c.deleted &&
-            c.Status === "Open" &&
-            c.ticketTitle.toLocaleLowerCase().includes(ticketSearch)
-        );
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
+	};
 
-      default:
-        throw new Error(`Unknown filter: ${filter}`);
-    }
-  };
+	const handleDeleteQuestionario = async () => {
+		const response = await deletaQuestionario(selectedQuestionario);
+		if (response.status == 200) {
+			handleCloseDialog();
+			setSelectedQuestionario(null);
+		}
+	};
 
-  const tickets = useSelector(state =>
-    getVisibleTickets(
-      state.ticketReducer.tickets,
-      state.ticketReducer.currentFilter,
-      state.ticketReducer.ticketSearch
-    )
-  );
-  return (
-    <Box mt={4}>
-      <Grid container spacing={3} mb={3}>
-        <Grid item xs={12} md={6}>
-          <QuestionarioCadastro />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            size="small"
-            label="Procurar"
-            fullWidth
-            onChange={e => dispatch(SearchTicket(e.target.value))}
-          />
-        </Grid>
-      </Grid>
-      <Divider />
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography variant="h6">Id</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">Ticket</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">Assigned To</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">Status</Typography>
-              </TableCell>
-              <TableCell>
-                <Typography variant="h6">Date</Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography variant="h6">Action</Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tickets.map(ticket => (
-              <TableRow key={ticket.Id} hover>
-                <TableCell>{ticket.Id}</TableCell>
-                <TableCell>
-                  <Box>
-                    <Typography variant="h6" fontWeight="500" noWrap>
-                      {ticket.ticketTitle}
-                    </Typography>
-                    <Typography
-                      color="textSecondary"
-                      noWrap
-                      sx={{ maxWidth: "250px" }}
-                      variant="subtitle2"
-                      fontWeight="400"
-                    >
-                      {ticket.ticketDescription}
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Stack direction="row" gap="10px" alignItems="center">
-                    <Avatar
-                      src={ticket.thumb}
-                      alt={ticket.thumb}
-                      width="35"
-                      sx={{
-                        borderRadius: "100%",
-                      }}
-                    />
-                    <Typography variant="h6">{ticket.AgentName}</Typography>
-                  </Stack>
-                </TableCell>
-                <TableCell>
-                  <Chip
-                    sx={{
-                      backgroundColor:
-                        ticket.Status === "Open"
-                          ? theme => theme.palette.success.light
-                          : ticket.Status === "Closed"
-                          ? theme => theme.palette.error.light
-                          : ticket.Status === "Pending"
-                          ? theme => theme.palette.warning.light
-                          : ticket.Status === "Moderate",
-                    }}
-                    size="small"
-                    label={ticket.Status}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Typography>{ticket.Date}</Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Tooltip title="Delete Ticket">
-                    <IconButton
-                      onClick={() => dispatch(DeleteTicket(ticket.Id))}
-                    >
-                      <IconTrash size="18" />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Box my={3} display="flex" justifyContent={"center"}>
-        <Pagination count={10} color="primary" />
-      </Box>
-    </Box>
-  );
+	return (
+		<>
+			<Box mt={4}>
+				<Grid container spacing={3} mb={3}>
+					<Grid item xs={12} md={6}>
+						<TextField size="small" label="Procurar" fullWidth />
+					</Grid>
+				</Grid>
+				<Divider />
+				<TableContainer>
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableCell>
+									<Typography variant="h6">Questionário</Typography>
+								</TableCell>
+								<TableCell align="right">
+									<Typography variant="h6">Ações</Typography>
+								</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{questionarios.map(questionario => (
+								<TableRow key={questionario.questionario_id} hover>
+									<TableCell>
+										<Box>
+											<Typography variant="h6" fontWeight="500" noWrap>
+												{questionario.nome}
+											</Typography>
+											<Typography color="textSecondary" noWrap sx={{ maxWidth: "250px" }} variant="subtitle2" fontWeight="400">
+												{questionario.descricao}
+											</Typography>
+										</Box>
+									</TableCell>
+									<TableCell align="right">
+										<Tooltip placement="top" title="Editar Questionário">
+											<IconButton LinkComponent={Link} to={`/questionarios/edita/${questionario.questionario_id}`}>
+												<Edit size="18" />
+											</IconButton>
+										</Tooltip>
+										<Tooltip placement="top" title="Inativar Questionário">
+											<IconButton onClick={() => handleOpenDialog(questionario.questionario_id)}>
+												<IconTrash size="18" />
+											</IconButton>
+										</Tooltip>
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</TableContainer>
+				<Box my={3} display="flex" justifyContent={"center"}>
+					<Pagination count={10} color="primary" />
+				</Box>
+			</Box>
+			<Dialog open={openDialog} onClose={handleCloseDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+				<DialogTitle id="alert-dialog-title">{"Deseja inativar o questionário?"}</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						Fazendo isso, o questionário selecionado não poderá mais ser utilizado em novas OS. Os dados permanecerão salvos no banco de dados para futuras consultas.
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialog}>Cancelar</Button>
+					<Button onClick={handleDeleteQuestionario} autoFocus>
+						Confirmar
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</>
+	);
 };
 
 export default ListaQuestionarios;

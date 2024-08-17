@@ -3,10 +3,6 @@ import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 
-
-
-
-
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -128,6 +124,9 @@ const TiposServicos = Loadable(lazy(() => import("../views/pages/TiposServicos/T
 
 const QuestionarioCadastro = Loadable(lazy(() => import("../views/pages/Questionarios/Cadastro/Cadastro")));
 
+const CadastroAtividade = Loadable(lazy(() => import('../components/atividades/Cadastro/Cadastro')));
+const DetalhesAtividade = Loadable(lazy(() => import('../views/pages/Atividades/Detalhes/DetalhesAtividade')));
+
 const Router = [
   {
     path: '/',
@@ -136,8 +135,11 @@ const Router = [
       { path: '/sites/lista', element: <Sites /> },
       { path: '/sites/cadastro', element: <SitesCadastro /> },
       { path: '/atividades/lista', element: <Atividades /> },
+      { path: '/atividades/cadastro', element: <CadastroAtividade /> },
+      { path: '/atividades/detalhes/:atividade_id', element: <DetalhesAtividade /> },
       { path: '/questionarios/lista', element: <Questionarios /> },
       { path: '/questionarios/cadastro', element: <QuestionarioCadastro /> },
+      { path: '/questionarios/edita/:questionario_id', element: <QuestionarioCadastro /> },
       { path: '/configuracoes', element: <Configuracoes /> },
       { path: '/tipos-servicos', element: <TiposServicos /> },
       { path: '/usuarios', element: <Usuarios /> },

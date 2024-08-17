@@ -6,10 +6,30 @@ export const useQuestionarioStore = create((set, get) => ({
      tarefas: [],
      error: null,
      questionario: {},
-     fetchQuestionario: async (empresa_id) => {
+     questionarios: [],
+     perguntas: [],
+     getQuestionario: async (questionario_id) => {
+          set({ questionario: {}, isLoading: true, error: null })
+          try {
+               const response = await api.get('/questionario/buscar', { params: { questionario_id: questionario_id } })
+               set({ questionario: response.data.questionario, isLoading: false })
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
+          }
+     },
+     fetchQuestionarios: async () => {
+          set({ questionarios: [], isLoading: true, error: null })
+          try {
+               const response = await api.get('/questionario/listar')
+               set({ questionarios: response.data.questionarios, isLoading: false })
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
+          }
+     },
+     fetchQuestionario: async () => {
           set({ isLoading: true, error: null })
           try {
-               const response = await api.get('/questionario/cadastro', { params: { empresa_id: empresa_id } })
+               const response = await api.get('/questionario/cadastro')
                set({ questionario: response.data.questionario, isLoading: false })
           } catch (error) {
                set({ isLoading: false, error: error.message })
@@ -27,19 +47,39 @@ export const useQuestionarioStore = create((set, get) => ({
                set({ isLoading: false, error: error.message })
           }
      },
-     fetchTarefas: async (checklist_id) => {
+     finalizaQuestionario: async (questionario_id) => {
           set({ isLoading: true, error: null })
           try {
-               const response = await api.get('/questionario/tarefas/listar', { params: { checklist_id: checklist_id } })
+               const response = await api.put('/questionario/cadastro/finalizar', { questionario_id: questionario_id });
+               set({ isLoading: false })
+               return response;
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
+          }
+     },
+     deletaQuestionario: async (questionario_id) => {
+          set({ isLoading: true, error: null })
+          try {
+               const response = await api.delete('/questionario/cadastro', { params: { questionario_id: questionario_id } });
+               set((state) => ({ isLoading: false, questionarios: state.questionarios.filter((q) => q.questionario_id !== questionario_id) }))
+               return response;
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
+          }
+     },
+     fetchTarefas: async (questionario_id) => {
+          set({ isLoading: true, error: null })
+          try {
+               const response = await api.get('/questionario/tarefas/listar', { params: { questionario_id: questionario_id } })
                set({ tarefas: response.data.tarefas, isLoading: false })
           } catch (error) {
                set({ isLoading: false, error: error.message })
           }
      },
-     addTarefa: async (checklist_id) => {
+     addTarefa: async (questionario_id) => {
           set({ isLoading: true, error: null })
           try {
-               const response = await api.post('/questionario/tarefas/adicionar', { checklist_id: checklist_id });
+               const response = await api.post('/questionario/tarefas/adicionar', { questionario_id: questionario_id });
                const tarefa = response.data;
 
                set((state) => ({
@@ -47,7 +87,7 @@ export const useQuestionarioStore = create((set, get) => ({
                          ...state.tarefas,
                          {
                               tarefa_id: tarefa.tarefa_id,
-                              checklist_id: tarefa.checklist_id,
+                              questionario_id: tarefa.questionario_id,
                               nome_tarefa: "",
                               descricao_tarefa: ""
                          }
@@ -81,10 +121,10 @@ export const useQuestionarioStore = create((set, get) => ({
                set({ error: error.message, isLoading: false })
           }
      },
-     fetchPerguntas: async (checklist_id) => {
+     fetchPerguntas: async (questionario_id) => {
           set({ isLoading: true, error: null })
           try {
-               const response = await api.get('/questionario/perguntas/listar', { params: { checklist_id: checklist_id } })
+               const response = await api.get('/questionario/perguntas/listar', { params: { questionario_id: questionario_id } })
                set({ perguntas: response.data.perguntas, isLoading: false })
           } catch (error) {
                set({ isLoading: false, error: error.message })
@@ -97,7 +137,7 @@ export const useQuestionarioStore = create((set, get) => ({
                const perguntaResponse = response.data.pergunta;
                set((state) => ({
                     perguntas: [...state.perguntas, {
-                         checklist_id: perguntaResponse.checklist_id,
+                         questionario_id: perguntaResponse.questionario_id,
                          created_at: perguntaResponse.created_at,
                          empresa_id: perguntaResponse.empresa_id,
                          opcoes: "",
@@ -135,6 +175,16 @@ export const useQuestionarioStore = create((set, get) => ({
                }))
           } catch (error) {
                set({ error: error.message, isLoading: false })
+          }
+     },
+     listaPorTipoServico: async (tipo_servico_id) => {
+          set({ isLoading: true, error: null })
+          try {
+               const response = await api.get('/questionario/listar-por-tipo-servico', { params: { tipo_servico_id: tipo_servico_id } })
+               set({ questionarios: response.data.questionarios, isLoading: false })
+               return response
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
           }
      }
 }))

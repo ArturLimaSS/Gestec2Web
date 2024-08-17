@@ -6,21 +6,24 @@ import PageContainer from "../../../components/container/PageContainer";
 import BlankCard from "../../../components/shared/BlankCard";
 import Breadcrumb from "../../../layouts/full/shared/breadcrumb/Breadcrumb";
 import ChildCard from "src/components/shared/ChildCard";
+import ListaQuestionarios from "../../../components/pages/questionarios/ListaQuestionarios";
 
 const BCrumb = [
-  {
-    title: "Gestão de Questionários",
-  },
+	{
+		title: "Gestão de Questionários",
+	},
 ];
 
 const Questionarios = () => {
-  return (
-    <PageContainer title="Questionários" description="Gestão de Questionários">
-      <Breadcrumb title="Gestão de Questionários" items={BCrumb} />
-      <BlankCard>
-        <CardContent>{/* <ListaQuestionarios /> */}</CardContent>
-      </BlankCard>
-    </PageContainer>
-  );
+	return (
+		<PageContainer title="Questionários" description="Gestão de Questionários">
+			<Breadcrumb title="Gestão de Questionários" items={BCrumb} />
+			<BlankCard>
+				<CardContent>
+					<ListaQuestionarios />
+				</CardContent>
+			</BlankCard>
+		</PageContainer>
+	);
 };
 export default Questionarios;

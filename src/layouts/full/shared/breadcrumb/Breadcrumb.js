@@ -64,7 +64,7 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
         ) : (
           <>
             <Box sx={{ top: '0px', position: 'absolute' }}>
-              <img src={breadcrumbImg} alt={breadcrumbImg} width={'165px'} />
+
             </Box>
           </>
         )}

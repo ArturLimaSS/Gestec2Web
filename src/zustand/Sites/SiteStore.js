@@ -6,10 +6,10 @@ export const useSitesStore = create((set, get) => ({
   site: {},
   isLoading: false,
   error: null,
-  fetchListaSites: async (empresa_id) => {
+  fetchListaSites: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get('site/listar', { params: { empresa_id: empresa_id } });
+      const response = await api.get('site/listar');
       set({ listaSites: response.data.sites, isLoading: false });
       return response;
     } catch (error) {

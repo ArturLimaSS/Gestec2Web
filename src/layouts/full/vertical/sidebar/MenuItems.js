@@ -137,7 +137,7 @@ const Menuitems = [
     children: [
       {
         id: uniqueId(),
-        title: 'Novo Questionário',
+        title: 'Cadastro de Questionário',
         icon: IconPlus,
         href: '/questionarios/cadastro',
       },

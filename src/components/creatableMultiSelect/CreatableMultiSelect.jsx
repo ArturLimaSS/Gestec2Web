@@ -34,8 +34,8 @@ function CreatableMultiSelect({ label, onChangeValues, onChange, initialValues }
 			const newValues = [...value, newValue];
 			setOptions(newOptions);
 			setValue(newValues);
-			onChange(newValues); // Chame onChange com o novo valor
-			onChangeValues(newValues); // Chame onChangeValues com o novo valor
+			onChange(newValues);
+			onChangeValues(newValues);
 		}
 	};
 

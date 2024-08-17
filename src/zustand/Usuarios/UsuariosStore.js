@@ -17,10 +17,10 @@ export const useUserStore = create((set, get) => {
         set({ filteredUsers: get().users.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase())) })
       }
     },
-    fetchUser: async (empresa_id) => {
+    fetchUser: async (cargo_id) => {
       set({ isLoading: true, error: null });
       try {
-        const response = await api.get("/user/listar", { params: { empresa_id: empresa_id } });
+        const response = await api.get("/user/listar", { params: { cargo_id: cargo_id } });
         set({ users: response.data.users, filteredUsers: response.data.users, isLoading: false });
       } catch (error) {
         set({ error: error.message, isLoading: false });
