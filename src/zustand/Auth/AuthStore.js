@@ -59,6 +59,6 @@ export const useAuthStore = create((set) => {
       } catch (error) {
         set({ error: error.response.data.message, isLoading: false });
       }
-    }
+    },
   })
 })

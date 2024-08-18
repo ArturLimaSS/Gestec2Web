@@ -37,10 +37,10 @@ export const useAtividadesStore = create((set, get) => ({
 
           }
      },
-     concluiAtividade: async (atividade_id, password) => {
+     concluiAtividade: async (atividade_id, password, atividade_conclusao) => {
           set({ isLoading: true, error: null })
           try {
-               const response = await api.put('/atividade/concluir', { atividade_id: atividade_id, password: password })
+               const response = await api.put('/atividade/concluir', { atividade_id: atividade_id, password: password, atividade_conclusao: atividade_conclusao })
                console.log(response)
                return response;
           } catch (error) {
@@ -48,5 +48,16 @@ export const useAtividadesStore = create((set, get) => ({
                return error.response;
           }
      },
+     geraRelatorio: async (atividade_id) => {
+          set({ isLoading: true, error: null })
+          try {
+               const response = await api.get('/atividade/anexo/relatorio', { params: { atividade_id: atividade_id } })
+               window.location.href = response.data.url
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
+               return error.response;
+          }
+     }
+
 
 }))

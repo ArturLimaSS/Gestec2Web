@@ -43,7 +43,7 @@ export const useUploadStore = create((set, get) => ({
           set({ isLoading: true, error: null })
           try {
                const response = await api.put('/atividade/anexo/excluir', { arquivo_id });
-               set((state) => ({ isLoading: false, arquivos: state.arquivos.filter((a) => a.arquivo_id !== arquivo_id) }));
+               set((state) => ({ isLoading: false, arquivos: state.arquivos.filter((a) => a.anexo_id !== arquivo_id) }));
                return response;
           } catch (error) {
                set({ isLoading: false, error: error.message })

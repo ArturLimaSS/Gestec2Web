@@ -109,6 +109,37 @@ const ListaAnexos = () => {
 		}
 	};
 
+	const excluirArquivo = async () => {
+		enqueueSnackbar(
+			<Box
+				sx={{
+					display: "flex",
+					flexDirection: "row",
+					gap: 1,
+					justifyContent: "center",
+					alignItems: "center",
+					color: "#fff",
+				}}
+			>
+				<CircularProgress
+					sx={{
+						color: "#fff",
+					}}
+				/>{" "}
+				<Typography> Atualizando...</Typography>
+			</Box>
+		);
+		const response = await deletaArquivo(selectedArquivo.anexo_id);
+		if (response.status === 200) {
+			closeSnackbar();
+			enqueueSnackbar("Arquivo excluído com sucesso!", { variant: "success" });
+			handleCloseDialogAnexo();
+			setSelectedArquivo({});
+		} else {
+			enqueueSnackbar("Ocorreu um erro ao excluir o arquivo!", { variant: "error" });
+		}
+	};
+
 	return (
 		<>
 			<PageContainer title="Shop List" description="this is Shop List page">
@@ -174,7 +205,7 @@ const ListaAnexos = () => {
 			</PageContainer>
 			<Menu open={open} anchorEl={anchorEl} onClose={handleCloseMenu}>
 				<MenuItem onClick={handleOpenDialogAnexo}>Visualizar/Editar</MenuItem>
-				<MenuItem>Excluir</MenuItem>
+				<MenuItem onClick={excluirArquivo}>Excluir</MenuItem>
 			</Menu>
 
 			<Dialog fullWidth maxWidth="xl" fullScreen={isMd} open={openDialogAnexo} onClose={handleCloseDialogAnexo}>

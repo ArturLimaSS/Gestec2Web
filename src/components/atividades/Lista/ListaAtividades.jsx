@@ -90,7 +90,7 @@ const ListaAtividades = () => {
 									</TableCell>
 									<TableCell align="right">
 										<Tooltip title="Visualizar Atividade">
-											<IconButton component={Link} to={`/atividades/detalhes/${atividade.atividade_id}`}>
+											<IconButton component={Link} target="_blank" to={`/atividades/detalhes/${atividade.atividade_id}`}>
 												<RemoveRedEye size="18" />
 											</IconButton>
 										</Tooltip>

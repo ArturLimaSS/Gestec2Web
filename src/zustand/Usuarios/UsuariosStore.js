@@ -66,6 +66,6 @@ export const useUserStore = create((set, get) => {
       } else {
         set({ editUser: !(get().editUser) })
       }
-    }
+    },
   };
 })

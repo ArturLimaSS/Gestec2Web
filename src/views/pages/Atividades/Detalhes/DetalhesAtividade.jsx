@@ -38,7 +38,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import BlankCard from "../../../../components/shared/BlankCard";
-import { Add, AttachFile, Check, Delete, Edit, FileCopy, FileUpload, Print, RemoveRedEye, Save, Share, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Add, AttachFile, Check, Delete, Edit, FileCopy, FileUpload, Print, RemoveRedEye, Save, Share, TextSnippet, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useQuestionarioStore } from "../../../../zustand/Questionario/QuestionarioStore";
 import { useAuthStore } from "../../../../zustand/Auth/AuthStore";
 import CreatableMultiSelect from "../../../../components/creatableMultiSelect/CreatableMultiSelect";
@@ -66,7 +66,7 @@ const DetalhesAtividade = () => {
 	const isMd = useMediaQuery(theme => theme.breakpoints.down("md"));
 	const location = useLocation();
 
-	const [selectedTab, setSelectedTab] = useState(2);
+	const [selectedTab, setSelectedTab] = useState(1);
 
 	const { atividade_id } = useParams();
 
@@ -74,10 +74,18 @@ const DetalhesAtividade = () => {
 		getAtividadeDetalhes(atividade_id);
 	}, []);
 
-	const { getAtividadeDetalhes, atividade } = useAtividadesStore(store => ({
+	const { getAtividadeDetalhes, atividade, createAtividades, geraRelatorio } = useAtividadesStore(store => ({
 		getAtividadeDetalhes: store.getAtividadeDetalhes,
 		atividade: store.atividade,
+		createAtividades: store.createAtividades,
+		geraRelatorio: store.geraRelatorio,
 	}));
+
+	const [tempAtividade, setTempAtividade] = useState(atividade);
+
+	useEffect(() => {
+		setTempAtividade(atividade);
+	}, [atividade]);
 
 	const navigate = useNavigate();
 
@@ -113,10 +121,6 @@ const DetalhesAtividade = () => {
 		setTempRespostas(tempRespostas.map(r => (r.pergunta_id == pergunta.pergunta_id ? { ...r, resposta: value } : r)));
 	};
 
-	useEffect(() => {
-		console.log(tempRespostas);
-	}, [tempRespostas]);
-
 	const BCrumb = [
 		{
 			to: "/atividades/lista",
@@ -124,9 +128,7 @@ const DetalhesAtividade = () => {
 		},
 		{
 			title: (
-				<Typography>
-					{atividade.atividade_nome} / {questionario.nome} / {questionario.descricao}
-				</Typography>
+				<Typography>{tempAtividade.atividade_tipo == "relatorio" ? atividade.atividade_nome : `${atividade.atividade_nome} / ${questionario.nome} / ${questionario.descricao}`}</Typography>
 			),
 		},
 	];
@@ -176,7 +178,7 @@ const DetalhesAtividade = () => {
 						color: "#fff",
 					}}
 				/>{" "}
-				<Typography>Atualizando Respostas</Typography>
+				<Typography>Atualizando...</Typography>
 			</Box>,
 			{
 				variant: "info",
@@ -191,7 +193,7 @@ const DetalhesAtividade = () => {
 		if (areEqual) {
 			setTimeout(() => {
 				closeSnackbar();
-				enqueueSnackbar("Respostas já estão atualizadas!", { variant: "warning" });
+				enqueueSnackbar("Nenhuma informação para atualizar!", { variant: "warning" });
 			}, 485);
 			return;
 		}
@@ -212,14 +214,14 @@ const DetalhesAtividade = () => {
 						color: "#fff",
 					}}
 				/>{" "}
-				<Typography variant="h5">Conclindo a atividade</Typography>
+				<Typography variant="h5">Concluindo a atividade</Typography>
 			</Box>,
 			{
 				variant: "info",
 				hideIconVariant: "true",
 			}
 		);
-		const response = await concluiAtividade(atividade_id, pass);
+		const response = await concluiAtividade(atividade_id, pass, tempAtividade.atividade_conclusao);
 		console.log(response);
 		if (response.status === 200) {
 			closeSnackbar();
@@ -241,7 +243,10 @@ const DetalhesAtividade = () => {
 	return (
 		<>
 			<PageContainer title={"Atividade"} description="Gestão de Atividades">
-				<Breadcrumb title={`${atividade.atividade_nome} / ${questionario.nome} / ${questionario.descricao}`} items={BCrumb} />
+				<Breadcrumb
+					title={tempAtividade.atividade_tipo == "relatorio" ? atividade.atividade_nome : `${atividade.atividade_nome} / ${questionario.nome} / ${questionario.descricao}`}
+					items={BCrumb}
+				/>
 				<Box sx={{ mt: 3 }}>
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
@@ -250,7 +255,7 @@ const DetalhesAtividade = () => {
 									<Grid container spacing={1} sx={{ display: "flex", justifyContent: "start" }}>
 										<Grid item xs={6} md={6} lg={1}>
 											<Button onClick={() => setSelectedTab(1)} fullWidth variant={selectedTab == 1 ? "contained" : "outlined"} color="secondary">
-												Respostas
+												Detalhes
 											</Button>
 										</Grid>
 										<Grid fullWidth item xs={6} md={6} lg={1}>
@@ -267,108 +272,137 @@ const DetalhesAtividade = () => {
 								</CardContent>
 							</BlankCard>
 						</Grid>
-						{selectedTab == "1" &&
-							tarefas &&
-							tarefas.map((tarefa, index) => (
-								<Grid item xs={12} key={index}>
+						{selectedTab == "1" ? (
+							<>
+								{tarefas &&
+									tarefas.map((tarefa, index) => (
+										<Grid item xs={12} key={index}>
+											<BlankCard>
+												<CardContent>
+													<Typography variant="h6" component="div" gutterBottom>
+														{tarefa.nome_tarefa}
+													</Typography>
+													<Typography>{tarefa.descricao}</Typography>
+												</CardContent>
+												<Divider />
+												<CardContent
+													sx={{
+														display: "flex",
+														flexDirection: "column",
+														gap: 2,
+													}}
+												>
+													{perguntas &&
+														perguntas.map((pergunta, index) => {
+															if (pergunta.tarefa_id === tarefa.tarefa_id) {
+																const respostaAtual = tempRespostas.find(res => res.pergunta_id === pergunta.pergunta_id) || {};
+
+																if (pergunta.tipo_resposta === "text" || pergunta.tipo_resposta === "number") {
+																	return (
+																		<div key={index}>
+																			<TextField
+																				value={respostaAtual.resposta || ""}
+																				onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																				label={pergunta.pergunta}
+																				fullWidth
+																				type={pergunta.tipo_resposta === "number" ? "number" : "text"}
+																			/>
+																			<Divider />
+																		</div>
+																	);
+																}
+
+																if (pergunta.tipo_resposta === "select") {
+																	return (
+																		<FormControl fullWidth key={index}>
+																			<InputLabel id={`label-${pergunta.pergunta_id}`}>{pergunta.pergunta}</InputLabel>
+																			<Select
+																				value={respostaAtual.resposta || ""}
+																				onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																				fullWidth
+																				labelId={`label-${pergunta.pergunta_id}`}
+																				label={pergunta.pergunta}
+																			>
+																				<MenuItem value="">Selecione</MenuItem>
+																				{JSON.parse(pergunta.opcoes).map((opcao, idx) => (
+																					<MenuItem key={idx} value={opcao}>
+																						{opcao}
+																					</MenuItem>
+																				))}
+																			</Select>
+																		</FormControl>
+																	);
+																}
+
+																if (pergunta.tipo_resposta === "checkbox") {
+																	return (
+																		<FormControl key={index}>
+																			<FormLabel>{pergunta.pergunta}</FormLabel>
+																			<FormGroup>
+																				{JSON.parse(pergunta.opcoes).map((opcao, idx) => {
+																					return (
+																						<FormControlLabel
+																							key={idx}
+																							control={<Checkbox checked={respostaAtual.resposta == opcao} />}
+																							label={opcao}
+																							onChange={e => handleUpdateTempRespostas(pergunta, opcao, e.target.checked)}
+																						/>
+																					);
+																				})}
+																			</FormGroup>
+																		</FormControl>
+																	);
+																}
+
+																if (pergunta.tipo_resposta === "radio") {
+																	return (
+																		<FormControl key={index}>
+																			<FormLabel>{pergunta.pergunta}</FormLabel>
+																			<RadioGroup
+																				value={respostaAtual.resposta || ""}
+																				onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																			>
+																				<FormControlLabel value="Sim" control={<Radio />} label="Sim" />
+																				<FormControlLabel value="Não" control={<Radio />} label="Não" />
+																			</RadioGroup>
+																		</FormControl>
+																	);
+																}
+															}
+															return null; // Certifique-se de retornar null caso a pergunta não corresponda à tarefa
+														})}
+												</CardContent>
+											</BlankCard>
+										</Grid>
+									))}
+								{tempAtividade.atividade_endereco && (
+									<Grid item xs={12}>
+										<BlankCard>
+											<CardContent>
+												<Typography variant="h6" component="div" gutterBottom>
+													Endereço: {tempAtividade.atividade_endereco}
+												</Typography>
+											</CardContent>
+										</BlankCard>
+									</Grid>
+								)}
+								<Grid item xs={12}>
 									<BlankCard>
 										<CardContent>
 											<Typography variant="h6" component="div" gutterBottom>
-												{tarefa.nome_tarefa}
+												Conclusão da Atividade
 											</Typography>
-											<Typography>{tarefa.descricao}</Typography>
-										</CardContent>
-										<Divider />
-										<CardContent
-											sx={{
-												display: "flex",
-												flexDirection: "column",
-												gap: 2,
-											}}
-										>
-											{perguntas &&
-												perguntas.map((pergunta, index) => {
-													if (pergunta.tarefa_id === tarefa.tarefa_id) {
-														const respostaAtual = tempRespostas.find(res => res.pergunta_id === pergunta.pergunta_id) || {};
-
-														if (pergunta.tipo_resposta === "text" || pergunta.tipo_resposta === "number") {
-															return (
-																<div key={index}>
-																	<TextField
-																		value={respostaAtual.resposta || ""}
-																		onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
-																		label={pergunta.pergunta}
-																		fullWidth
-																		type={pergunta.tipo_resposta === "number" ? "number" : "text"}
-																	/>
-																	<Divider />
-																</div>
-															);
-														}
-
-														if (pergunta.tipo_resposta === "select") {
-															return (
-																<FormControl fullWidth key={index}>
-																	<InputLabel id={`label-${pergunta.pergunta_id}`}>{pergunta.pergunta}</InputLabel>
-																	<Select
-																		value={respostaAtual.resposta || ""}
-																		onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
-																		fullWidth
-																		labelId={`label-${pergunta.pergunta_id}`}
-																		label={pergunta.pergunta}
-																	>
-																		<MenuItem value="">Selecione</MenuItem>
-																		{JSON.parse(pergunta.opcoes).map((opcao, idx) => (
-																			<MenuItem key={idx} value={opcao}>
-																				{opcao}
-																			</MenuItem>
-																		))}
-																	</Select>
-																</FormControl>
-															);
-														}
-
-														if (pergunta.tipo_resposta === "checkbox") {
-															return (
-																<FormControl key={index}>
-																	<FormLabel>{pergunta.pergunta}</FormLabel>
-																	<FormGroup>
-																		{JSON.parse(pergunta.opcoes).map((opcao, idx) => {
-																			return (
-																				<FormControlLabel
-																					key={idx}
-																					control={<Checkbox checked={respostaAtual.resposta == opcao} />}
-																					label={opcao}
-																					onChange={e => handleUpdateTempRespostas(pergunta, opcao, e.target.checked)}
-																				/>
-																			);
-																		})}
-																	</FormGroup>
-																</FormControl>
-															);
-														}
-
-														if (pergunta.tipo_resposta === "radio") {
-															return (
-																<FormControl key={index}>
-																	<FormLabel>{pergunta.pergunta}</FormLabel>
-																	<RadioGroup
-																		value={respostaAtual.resposta || ""}
-																		onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
-																	>
-																		<FormControlLabel value="Sim" control={<Radio />} label="Sim" />
-																		<FormControlLabel value="Não" control={<Radio />} label="Não" />
-																	</RadioGroup>
-																</FormControl>
-															);
-														}
-													}
-													return null; // Certifique-se de retornar null caso a pergunta não corresponda à tarefa
-												})}
+											<TextField
+												multiline
+												fullWidth
+												value={tempAtividade.atividade_conclusao}
+												onChange={e => setTempAtividade({ ...tempAtividade, atividade_conclusao: e.target.value })}
+											></TextField>
 										</CardContent>
 									</BlankCard>
 								</Grid>
-							))}
+							</>
+						) : null}
 
 						{selectedTab == "2" && <ListaAnexos />}
 					</Grid>
@@ -377,6 +411,7 @@ const DetalhesAtividade = () => {
 
 			<SpeedDial ariaLabel="SpeedDial controlled open example" sx={{ position: "fixed", bottom: 16, right: 16 }} icon={<SpeedDialIcon />} onClick={handleToggle} open={open}>
 				<SpeedDialAction
+					sx={{ marginBottom: 3 }}
 					color="primary"
 					variant="contained"
 					key={"Anexos"}
@@ -389,6 +424,30 @@ const DetalhesAtividade = () => {
 
 				<SpeedDialAction
 					sx={{ marginBottom: 3 }}
+					color="primary"
+					variant="contained"
+					key={"Gerar Relatório"}
+					icon={
+						<Box marginRight={6}>
+							<Button
+								onClick={() => geraRelatorio(atividade_id)}
+								variant="contained"
+								color="primary"
+								startIcon={<TextSnippet />}
+								sx={{
+									width: "120px",
+									paddingX: 3,
+									paddingY: 2,
+								}}
+							>
+								<Typography variant="h6">Relatório</Typography>
+							</Button>
+						</Box>
+					}
+				/>
+
+				<SpeedDialAction
+					sx={{ marginBottom: 6 }}
 					color="primary"
 					variant="contained"
 					key={"Salvar alterações"}

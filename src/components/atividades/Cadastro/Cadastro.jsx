@@ -45,6 +45,8 @@ const CadastroAtividade = () => {
 	const [atividadeData, setAtividadeData] = useState({
 		tipo_servico_id: "",
 		ativo_id: "",
+		atividade_tipo: "",
+		atividade_endereco: "",
 		questionario_id: "",
 		atividade_nome: "",
 		atividade_descricao: "",
@@ -119,6 +121,8 @@ const CadastroAtividade = () => {
 		}
 	};
 
+	const [atividadeTipo, setAtividadeTipo] = useState("");
+
 	return (
 		<>
 			<PageContainer title="Gestão de Atividades" description="Gestão de Atividades">
@@ -132,22 +136,45 @@ const CadastroAtividade = () => {
 										Identificação da Atividade
 									</Typography>
 									<Divider />
+									<Grid
+										sx={{
+											marginTop: 2,
+										}}
+										item
+										xs={12}
+									>
+										<FormControl fullWidth>
+											<InputLabel id="tipo_os_atividade_label">Tipo de Atividade</InputLabel>
+											<Select
+												label="Tipo de Atividade"
+												labelId="tipo_os_atividade_label"
+												onChange={e => setAtividadeData({ ...atividadeData, atividade_tipo: e.target.value })}
+											>
+												<MenuItem value="">Selecione...</MenuItem>
+												<MenuItem value="ordem_servico">Ordem de Serviço</MenuItem>
+												<MenuItem value="relatorio">Relatorio</MenuItem>
+											</Select>
+										</FormControl>
+									</Grid>
 									<Grid container spacing={3} sx={{ marginTop: 0 }}>
-										<Grid item xs={12}>
-											<Autocomplete
-												onChange={e => setAtividadeData({ ...atividadeData, ativo_id: e.target.value })}
-												renderInput={params => <TextField {...params} variant="outlined" label={"Selecione o Site"} placeholder="Digite para filtrar..." />}
-												options={
-													listaSites &&
-													listaSites.map(site => {
-														return {
-															value: site.site_id,
-															label: site.nome_site,
-														};
-													})
-												}
-											/>
-										</Grid>
+										{atividadeData.atividade_tipo == "ordem_servico" && (
+											<Grid item xs={12}>
+												<Autocomplete
+													onChange={e => setAtividadeData({ ...atividadeData, ativo_id: e.target.value })}
+													renderInput={params => <TextField {...params} variant="outlined" label={"Selecione o Site"} placeholder="Digite para filtrar..." />}
+													options={
+														listaSites &&
+														listaSites.map(site => {
+															return {
+																value: site.site_id,
+																label: site.nome_site,
+															};
+														})
+													}
+												/>
+											</Grid>
+										)}
+
 										<Grid item xs={12}>
 											<TextField
 												fullWidth
@@ -157,60 +184,75 @@ const CadastroAtividade = () => {
 											/>
 										</Grid>
 
-										<Grid item xs={12}>
-											<FormControl fullWidth>
-												<InputLabel id="tipo_servico_label_id">Tipo de Serviço</InputLabel>
-												<Select
-													onChange={e => setAtividadeData({ ...atividadeData, tipo_servico_id: e.target.value, questionario_id: "" })}
+										{atividadeData.atividade_tipo == "relatorio" && (
+											<Grid item xs={12}>
+												<TextField
 													fullWidth
-													labelId="tipo_servico_label_id"
-													id="tipo_servico_id"
-													name="tipo_servico_id"
-													label="Tipo de Serviço"
-												>
-													<MenuItem value="">Selecione um tipo de serviço</MenuItem>
-													{listaTiposServicos?.map((tipo, index) => (
-														<MenuItem value={tipo.tipo_servico_id} key={tipo.tipo_servico_id}>
-															{tipo.nome_tipo_servico}
-														</MenuItem>
-													))}
-												</Select>
-											</FormControl>
-										</Grid>
+													label="Endereço da Atividade"
+													value={atividadeData.atividade_endereco}
+													onChange={e => setAtividadeData({ ...atividadeData, atividade_endereco: e.target.value })}
+												></TextField>
+											</Grid>
+										)}
 
-										<Grid item xs={12}>
-											<FormControl fullWidth>
-												<InputLabel id="questionario_label_id">Questionario</InputLabel>
-												<Select
-													disabled={!atividadeData.tipo_servico_id}
-													onChange={e => setAtividadeData({ ...atividadeData, questionario_id: e.target.value })}
-													fullWidth
-													labelId="questionario_label_id"
-													id="questionario_id"
-													name="questionario_id"
-													label="Questionario"
-												>
-													<MenuItem value="">Selecione um Questionario</MenuItem>
-													{questionarios?.map((questionario, index) => (
-														<MenuItem
-															selected={questionario.questionario_id == atividadeData.questionario_id}
-															value={questionario.questionario_id}
-															key={questionario.questionario_id}
-														>
-															<Box
-																sx={{
-																	display: "flex",
-																	flexDirection: "column",
-																}}
+										{atividadeData.atividade_tipo == "ordem_servico" && (
+											<Grid item xs={12}>
+												<FormControl fullWidth>
+													<InputLabel id="tipo_servico_label_id">Tipo de Serviço</InputLabel>
+													<Select
+														onChange={e => setAtividadeData({ ...atividadeData, tipo_servico_id: e.target.value, questionario_id: "" })}
+														fullWidth
+														labelId="tipo_servico_label_id"
+														id="tipo_servico_id"
+														name="tipo_servico_id"
+														label="Tipo de Serviço"
+													>
+														<MenuItem value="">Selecione um tipo de serviço</MenuItem>
+														{listaTiposServicos?.map((tipo, index) => (
+															<MenuItem value={tipo.tipo_servico_id} key={tipo.tipo_servico_id}>
+																{tipo.nome_tipo_servico}
+															</MenuItem>
+														))}
+													</Select>
+												</FormControl>
+											</Grid>
+										)}
+
+										{atividadeData.atividade_tipo == "ordem_servico" && (
+											<Grid item xs={12}>
+												<FormControl fullWidth>
+													<InputLabel id="questionario_label_id">Questionario</InputLabel>
+													<Select
+														disabled={!atividadeData.tipo_servico_id}
+														onChange={e => setAtividadeData({ ...atividadeData, questionario_id: e.target.value })}
+														fullWidth
+														labelId="questionario_label_id"
+														id="questionario_id"
+														name="questionario_id"
+														label="Questionario"
+													>
+														<MenuItem value="">Selecione um Questionario</MenuItem>
+														{questionarios?.map((questionario, index) => (
+															<MenuItem
+																selected={questionario.questionario_id == atividadeData.questionario_id}
+																value={questionario.questionario_id}
+																key={questionario.questionario_id}
 															>
-																<Typography variant="subtitle2">{questionario.nome}</Typography>
-																<Typography variant="caption">{questionario.descricao}</Typography>
-															</Box>
-														</MenuItem>
-													))}
-												</Select>
-											</FormControl>
-										</Grid>
+																<Box
+																	sx={{
+																		display: "flex",
+																		flexDirection: "column",
+																	}}
+																>
+																	<Typography variant="subtitle2">{questionario.nome}</Typography>
+																	<Typography variant="caption">{questionario.descricao}</Typography>
+																</Box>
+															</MenuItem>
+														))}
+													</Select>
+												</FormControl>
+											</Grid>
+										)}
 
 										<Grid item xs={12}>
 											<Autocomplete

@@ -27,7 +27,7 @@ const Usuarios = () => {
   const { fetchUser } = useUserStore(store => store)
 
   useEffect(() => {
-    fetchUser(empresa.empresa_id)
+    fetchUser()
   }, [empresa])
 
   return (
