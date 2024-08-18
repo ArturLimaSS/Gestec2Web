@@ -1,6 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { filter, orderBy } from "lodash";
-import { Box, Grid, Stack, CardContent, useMediaQuery, Typography, Rating, Fab, Tooltip, Button, Skeleton, CardMedia, Card } from "@mui/material";
+import {
+	Box,
+	Grid,
+	Stack,
+	CardContent,
+	useMediaQuery,
+	Typography,
+	Rating,
+	Fab,
+	Tooltip,
+	Button,
+	Skeleton,
+	CardMedia,
+	Card,
+	Menu,
+	MenuItem,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	TextField,
+	DialogActions,
+	CircularProgress,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts, addToCart, filterReset } from "../../../../store/apps/eCommerce/EcommerceSlice";
@@ -12,162 +34,178 @@ import BlankCard from "../../../shared/BlankCard";
 import PageContainer from "../../../container/PageContainer";
 import Breadcrumb from "../../../../layouts/full/shared/breadcrumb/Breadcrumb";
 import AppCard from "../../../shared/AppCard";
+import { useUploadStore } from "../../../../zustand/Uploader/UploadStore";
+import { baseImageUrl } from "../../../../constants/endpoint";
+import { MoreVert, OpenInNewTwoTone } from "@mui/icons-material";
+import { useSnackbar, closeSnackbar } from "notistack";
 
-const ListaAnexos = ({ onClick }) => {
-	const dispatch = useDispatch();
-	const lgUp = useMediaQuery(theme => theme.breakpoints.up("lg"));
+const ListaAnexos = () => {
+	const isMd = useMediaQuery(theme => theme.breakpoints.down("md"));
+	const { enqueueSnackbar } = useSnackbar();
+	const { arquivos, isLoading, deletaArquivo, atualizaArquivo } = useUploadStore(store => ({
+		arquivos: store.arquivos,
+		isLoading: store.isLoading,
+		deletaArquivo: store.deletaArquivo,
+		atualizaArquivo: store.atualizaArquivo,
+	}));
 
+	const [arquivosComUrl, setArquivosComUrl] = useState([]);
 	useEffect(() => {
-		dispatch(fetchProducts());
-	}, [dispatch]);
+		const novoArray = arquivos?.map(arquivo => ({
+			...arquivo,
+			url: baseImageUrl + arquivo.caminho_arquivo,
+		}));
 
-	const getVisibleProduct = (products, sortBy, filters, search) => {
-		// SORT BY
-		if (sortBy === "newest") {
-			products = orderBy(products, ["created"], ["desc"]);
-		}
-		if (sortBy === "priceDesc") {
-			products = orderBy(products, ["price"], ["desc"]);
-		}
-		if (sortBy === "priceAsc") {
-			products = orderBy(products, ["price"], ["asc"]);
-		}
-		if (sortBy === "discount") {
-			products = orderBy(products, ["discount"], ["desc"]);
-		}
+		setArquivosComUrl(novoArray);
+	}, [arquivos]);
 
-		// FILTER PRODUCTS
-		if (filters.category !== "All") {
-			//products = filter(products, (_product) => includes(_product.category, filters.category));
-			products = products.filter(_product => _product.category.includes(filters.category));
-		}
-
-		//FILTER PRODUCTS BY GENDER
-		if (filters.gender !== "All") {
-			products = filter(products, _product => _product.gender === filters.gender);
-		}
-
-		//FILTER PRODUCTS BY GENDER
-		if (filters.color !== "All") {
-			products = products.filter(_product => _product.colors.includes(filters.color));
-		}
-
-		//FILTER PRODUCTS BY Search
-		if (search !== "") {
-			products = products.filter(_product => _product.title.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
-		}
-
-		//FILTER PRODUCTS BY Price
-		if (filters.price !== "All") {
-			const minMax = filters.price ? filters.price.split("-") : "";
-			products = products.filter(_product => (filters.price ? _product.price >= minMax[0] && _product.price <= minMax[1] : true));
-		}
-
-		return products;
+	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [selectedArquivo, setSelectedArquivo] = useState({});
+	const handleOpenMenu = event => {
+		setAnchorEl(event.currentTarget);
+		console.log(event.currentTarget);
 	};
 
-	const getProducts = useSelector(state => getVisibleProduct(state.ecommerceReducer.products, state.ecommerceReducer.sortBy, state.ecommerceReducer.filters, state.ecommerceReducer.productSearch));
+	const open = Boolean(anchorEl);
 
-	// for alert when added something to cart
-	const [cartalert, setCartalert] = React.useState(false);
+	const handleCloseMenu = () => setAnchorEl(null);
 
-	const handleClick = () => {
-		setCartalert(true);
+	const [openDialogAnexo, setOpenDialogAnexo] = useState(false);
+	const handleOpenDialogAnexo = () => setOpenDialogAnexo(true);
+	const handleCloseDialogAnexo = () => {
+		setOpenDialogAnexo(false);
+		setAnchorEl(null);
 	};
 
-	const handleClose = reason => {
-		if (reason === "clickaway") {
-			return;
+	const updateAnexo = async () => {
+		enqueueSnackbar(
+			<Box
+				sx={{
+					display: "flex",
+					flexDirection: "row",
+					gap: 1,
+					justifyContent: "center",
+					alignItems: "center",
+					color: "#fff",
+				}}
+			>
+				<CircularProgress
+					sx={{
+						color: "#fff",
+					}}
+				/>{" "}
+				<Typography> Atualizando...</Typography>
+			</Box>
+		);
+
+		const response = await atualizaArquivo(selectedArquivo);
+		if (response.status === 200) {
+			closeSnackbar();
+			enqueueSnackbar("Arquivo atualizado com sucesso!", { variant: "success" });
+			handleCloseDialogAnexo();
+			setSelectedArquivo({});
+		} else {
+			enqueueSnackbar("Ocorreu um erro ao atualizar o arquivo!", { variant: "error" });
 		}
-		setCartalert(false);
 	};
-
-	const [isLoading, setLoading] = React.useState(true);
-
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			setLoading(false);
-		}, 700);
-		return () => clearTimeout(timer);
-	}, []);
-
-	const BCrumb = [
-		{
-			to: "/",
-			title: "Home",
-		},
-		{
-			title: "Shop",
-		},
-	];
 
 	return (
-		<PageContainer title="Shop List" description="this is Shop List page">
-			<Box>
-				<CardContent>
-					<Box>
-						<Grid container spacing={3}>
-							{getProducts.length > 0 ? (
-								<>
-									{getProducts.map(product => (
-										<Grid item xs={12} xl={2} lg={3} md={4} sm={12} display="flex" alignItems="stretch" key={product.id}>
-											<BlankCard className="hoverCard">
-												<Typography component={Link} to={`/apps/ecommerce/detail/${product.id}`}>
-													{isLoading || !product.photo ? (
-														<>
-															<Skeleton variant="square" width={270} height={300}></Skeleton>
-														</>
-													) : (
-														<CardMedia component="img" width="100%" image={product.photo} alt="products" />
-													)}
+		<>
+			<PageContainer title="Shop List" description="this is Shop List page">
+				<Box>
+					<CardContent>
+						<Box>
+							<Grid container spacing={3}>
+								{arquivosComUrl && arquivosComUrl.length > 0 ? (
+									<>
+										{arquivosComUrl.map(arquivo => (
+											<Grid item xs={12} xl={3} lg={4} md={4} sm={12} display="flex" alignItems="stretch" key={arquivo.id}>
+												<BlankCard>
+													<Typography>
+														{isLoading || !arquivo.url ? (
+															<>
+																<Skeleton variant="square" width={270} height={300}></Skeleton>
+															</>
+														) : (
+															<CardMedia width={270} height={300} component="img" image={arquivo.url} alt={arquivo.descricao} />
+														)}
+														;
+													</Typography>
+													<Tooltip title="Opções">
+														<Fab
+															onClick={e => {
+																handleOpenMenu(e);
+																setSelectedArquivo(arquivo);
+															}}
+															value={arquivo}
+															size="small"
+															sx={{ bottom: "15px", right: "15px", position: "absolute" }}
+														>
+															<MoreVert size="16" />
+														</Fab>
+													</Tooltip>
+													<CardContent sx={{ p: 3, pt: 2 }}>
+														<Typography variant="h6">{arquivo.descricao}</Typography>
+													</CardContent>
+												</BlankCard>
+											</Grid>
+										))}
+									</>
+								) : (
+									<>
+										<Grid item xs={12} lg={12} md={12} sm={12}>
+											<Box textAlign="center" mt={6}>
+												<img src={emptyCart} alt="cart" width="200px" />
+												<Typography variant="h2">There is no Product</Typography>
+												<Typography variant="h6" mb={3}>
+													The Product you are searching is no longer available.
 												</Typography>
-												<Tooltip title="Add To Cart">
-													<Fab
-														size="small"
-														color="primary"
-														onClick={() => dispatch(addToCart(product)) && handleClick()}
-														sx={{ bottom: "75px", right: "15px", position: "absolute" }}
-													>
-														<IconBasket size="16" />
-													</Fab>
-												</Tooltip>
-												<CardContent sx={{ p: 3, pt: 2 }}>
-													<Typography variant="h6">{product.title}</Typography>
-													<Stack direction="row" alignItems="center" justifyContent="space-between" mt={1}>
-														<Stack direction="row" alignItems="center">
-															<Typography variant="h6">${product.price}</Typography>
-															<Typography color="textSecondary" ml={1} sx={{ textDecoration: "line-through" }}>
-																${product.salesPrice}
-															</Typography>
-														</Stack>
-														<Rating name="read-only" size="small" value={product.rating} readOnly />
-													</Stack>
-												</CardContent>
-											</BlankCard>
+												<Button variant="contained" onClick={() => dispatch(filterReset())}>
+													Try Again
+												</Button>
+											</Box>
 										</Grid>
-									))}
-								</>
-							) : (
-								<>
-									<Grid item xs={12} lg={12} md={12} sm={12}>
-										<Box textAlign="center" mt={6}>
-											<img src={emptyCart} alt="cart" width="200px" />
-											<Typography variant="h2">There is no Product</Typography>
-											<Typography variant="h6" mb={3}>
-												The Product you are searching is no longer available.
-											</Typography>
-											<Button variant="contained" onClick={() => dispatch(filterReset())}>
-												Try Again
-											</Button>
-										</Box>
-									</Grid>
-								</>
-							)}
-						</Grid>
-					</Box>
-				</CardContent>
-			</Box>
-		</PageContainer>
+									</>
+								)}
+							</Grid>
+						</Box>
+					</CardContent>
+				</Box>
+			</PageContainer>
+			<Menu open={open} anchorEl={anchorEl} onClose={handleCloseMenu}>
+				<MenuItem onClick={handleOpenDialogAnexo}>Visualizar/Editar</MenuItem>
+				<MenuItem>Excluir</MenuItem>
+			</Menu>
+
+			<Dialog fullWidth maxWidth="xl" fullScreen={isMd} open={openDialogAnexo} onClose={handleCloseDialogAnexo}>
+				<DialogTitle>Visualizar/Editar Anexo - {selectedArquivo?.descricao}</DialogTitle>
+				<DialogContent>
+					<BlankCard>
+						<CardContent
+							sx={{
+								padding: "1",
+							}}
+						>
+							<TextField label="Descrição" value={selectedArquivo?.descricao} onChange={e => setSelectedArquivo({ ...selectedArquivo, descricao: e.target.value })} fullWidth />
+							<Box
+								sx={{
+									marginTop: 1,
+									overflow: isMd ? "scroll" : "hidden",
+								}}
+							>
+								<img src={selectedArquivo?.url} alt={selectedArquivo?.descricao} height="100%" width={"100%"} />
+							</Box>
+						</CardContent>
+					</BlankCard>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialogAnexo}>Fechar</Button>
+					<Button color="secondary" onClick={updateAnexo} variant="contained">
+						Salvar alterações
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</>
 	);
 };
 

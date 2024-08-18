@@ -47,5 +47,6 @@ export const useAtividadesStore = create((set, get) => ({
                set({ isLoading: false, error: error.message })
                return error.response;
           }
-     }
+     },
+
 }))

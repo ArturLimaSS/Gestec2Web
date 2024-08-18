@@ -38,7 +38,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import BlankCard from "../../../../components/shared/BlankCard";
-import { Add, AttachFile, Check, Delete, Edit, FileCopy, Print, RemoveRedEye, Save, Share, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Add, AttachFile, Check, Delete, Edit, FileCopy, FileUpload, Print, RemoveRedEye, Save, Share, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useQuestionarioStore } from "../../../../zustand/Questionario/QuestionarioStore";
 import { useAuthStore } from "../../../../zustand/Auth/AuthStore";
 import CreatableMultiSelect from "../../../../components/creatableMultiSelect/CreatableMultiSelect";
@@ -66,7 +66,7 @@ const DetalhesAtividade = () => {
 	const isMd = useMediaQuery(theme => theme.breakpoints.down("md"));
 	const location = useLocation();
 
-	const [selectedTab, setSelectedTab] = useState(1);
+	const [selectedTab, setSelectedTab] = useState(2);
 
 	const { atividade_id } = useParams();
 
@@ -334,9 +334,6 @@ const DetalhesAtividade = () => {
 																	<FormLabel>{pergunta.pergunta}</FormLabel>
 																	<FormGroup>
 																		{JSON.parse(pergunta.opcoes).map((opcao, idx) => {
-																			console.log(pergunta.pergunta);
-																			console.log(respostaAtual.resposta);
-																			console.log(opcao);
 																			return (
 																				<FormControlLabel
 																					key={idx}
@@ -384,19 +381,8 @@ const DetalhesAtividade = () => {
 					variant="contained"
 					key={"Anexos"}
 					icon={
-						<Box marginRight={6}>
-							<Button
-								variant="contained"
-								color="primary"
-								sx={{
-									width: "120px",
-									paddingX: 3,
-									paddingY: 2,
-								}}
-								startIcon={<AttachFile />}
-							>
-								<Typography variant="h6">Anexo</Typography>
-							</Button>
+						<Box onClick={() => setSelectedTab(2)} marginRight={6}>
+							<DialogAnexos setOpenMenu={e => setOpenMenu(true)} />
 						</Box>
 					}
 				/>
