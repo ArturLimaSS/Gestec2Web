@@ -25,24 +25,48 @@ import {
 	RadioGroup,
 	FormLabel,
 	Fab,
+	Menu,
+	styled,
+	alpha,
+	SpeedDial,
+	SpeedDialIcon,
+	SpeedDialAction,
+	Tooltip,
+	CircularProgress,
+	useTheme,
+	useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import BlankCard from "../../../../components/shared/BlankCard";
-import { Add, Delete, Save } from "@mui/icons-material";
+import { Add, AttachFile, Check, Delete, Edit, FileCopy, Print, RemoveRedEye, Save, Share, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useQuestionarioStore } from "../../../../zustand/Questionario/QuestionarioStore";
 import { useAuthStore } from "../../../../zustand/Auth/AuthStore";
 import CreatableMultiSelect from "../../../../components/creatableMultiSelect/CreatableMultiSelect";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { useSnackbar } from "notistack";
+import { useSnackbar, closeSnackbar } from "notistack";
 import { useTiposServicosStore } from "../../../../zustand/TiposServicos/TiposServicosStore";
 import { Link } from "react-router-dom";
 import PageContainer from "../../../../components/container/PageContainer";
 import Breadcrumb from "../../../../layouts/full/shared/breadcrumb/Breadcrumb";
 import { useAtividadesStore } from "../../../../zustand/Atividades/AtividadesStore";
 import { useRespostaStore } from "../../../../zustand/Respostas/RespostaStore";
+import { IconEyeOff } from "@tabler/icons";
+import { DialogAnexos } from "../../../../components/atividades/Anexos/Anexos";
+import ListaAnexos from "../../../../components/atividades/Anexos/ListaAnexos/ListaAnexos";
+
+const actions = [
+	{ icon: <FileCopy />, name: "Copy" },
+	{ icon: <Save />, name: "Save" },
+	{ icon: <Print />, name: "Print" },
+	{ icon: <Share />, name: "Share" },
+];
 
 const DetalhesAtividade = () => {
+	const theme = useTheme();
+	const isMd = useMediaQuery(theme => theme.breakpoints.down("md"));
 	const location = useLocation();
+
+	const [selectedTab, setSelectedTab] = useState(1);
 
 	const { atividade_id } = useParams();
 
@@ -99,7 +123,11 @@ const DetalhesAtividade = () => {
 			title: "Lista de Atividades",
 		},
 		{
-			title: atividade.atividade_nome,
+			title: (
+				<Typography>
+					{atividade.atividade_nome} / {questionario.nome} / {questionario.descricao}
+				</Typography>
+			),
 		},
 	];
 
@@ -113,48 +141,134 @@ const DetalhesAtividade = () => {
 		}
 	}, [atividade.questionario_id]);
 
-	const handleAtualizaRespostas = () => {
-		updateResposta(tempRespostas);
+	const [open, setMenuOpen] = useState(false);
+
+	const handleToggle = () => {
+		setMenuOpen(!open);
+	};
+
+	const handleClose = () => {
+		setMenuOpen(false);
+	};
+
+	const { concluiAtividade } = useAtividadesStore(store => ({
+		concluiAtividade: store.concluiAtividade,
+	}));
+
+	const [openDialog, setOpenDialog] = useState(false);
+	const handleOpenDialog = () => {
+		setOpenDialog(true);
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
+	};
+
+	const [matriculaShow, setMatriculaShow] = useState(false);
+	const [pass, setPass] = useState("");
+
+	const handleAtualizaRespostas = async () => {
+		handleClose();
+		enqueueSnackbar(
+			<Box display={"flex"} color={"white"} flexDirection={"row"} gap={3} justifyContent={"center"} alignItems={"center"}>
+				<CircularProgress
+					sx={{
+						color: "#fff",
+					}}
+				/>{" "}
+				<Typography>Atualizando Respostas</Typography>
+			</Box>,
+			{
+				variant: "info",
+				hideIconVariant: "true",
+			}
+		);
+		const arr1 = tempRespostas.map(r => r.resposta).sort();
+		const arr2 = respostas.map(r => r.resposta).sort();
+
+		const areEqual = arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
+
+		if (areEqual) {
+			setTimeout(() => {
+				closeSnackbar();
+				enqueueSnackbar("Respostas já estão atualizadas!", { variant: "warning" });
+			}, 485);
+			return;
+		}
+
+		const response = await updateResposta(tempRespostas);
+		if (response.status === 200) {
+			closeSnackbar();
+			enqueueSnackbar("Respostas atualizadas com sucesso!", { variant: "success" });
+		}
+	};
+
+	const handleConcluirAtividade = async () => {
+		handleClose();
+		enqueueSnackbar(
+			<Box display={"flex"} color={"white"} flexDirection={"row"} gap={3} justifyContent={"center"} alignItems={"center"}>
+				<CircularProgress
+					sx={{
+						color: "#fff",
+					}}
+				/>{" "}
+				<Typography variant="h5">Conclindo a atividade</Typography>
+			</Box>,
+			{
+				variant: "info",
+				hideIconVariant: "true",
+			}
+		);
+		const response = await concluiAtividade(atividade_id, pass);
+		console.log(response);
+		if (response.status === 200) {
+			closeSnackbar();
+			handleCloseDialog();
+			enqueueSnackbar(<Typography variant="h5">Atividade concluída com sucesso!</Typography>, { variant: "success" });
+			setTimeout(() => {
+				navigate("/atividades/lista");
+				window.location.reload();
+			}, 1000);
+		} else if (response.status == "401") {
+			closeSnackbar();
+			enqueueSnackbar(<Typography variant="h5">Senha inválida!</Typography>, { variant: "error" });
+		} else {
+			closeSnackbar();
+			enqueueSnackbar(<Typography variant="h5">Erro ao concluir atividade</Typography>, { variant: "error" });
+		}
 	};
 
 	return (
 		<>
-			<Fab onClick={handleAtualizaRespostas} color={"success"} variant="extended" sx={{ background: "#66bb6a", borderRadius: "10px", position: "fixed", right: "25px", bottom: "25px" }}>
-				<Save sx={{ mr: 1 }} />
-				<Typography>Salvar</Typography>
-			</Fab>
 			<PageContainer title={"Atividade"} description="Gestão de Atividades">
-				<Breadcrumb title={atividade.atividade_nome} items={BCrumb} />
+				<Breadcrumb title={`${atividade.atividade_nome} / ${questionario.nome} / ${questionario.descricao}`} items={BCrumb} />
 				<Box sx={{ mt: 3 }}>
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
 							<BlankCard>
 								<CardContent>
-									<Box
-										sx={{
-											mb: 1,
-										}}
-									>
-										<Typography variant="h5" component="div" gutterBottom>
-											{atividade.atividade_nome}
-										</Typography>
-										<Typography>{atividade.atividade_descricao || "Sem descrição"}</Typography>
-									</Box>
-									<Divider />
-									<Grid container spacing={3} sx={{ marginTop: 0 }}>
-										<Grid item xs={12}>
-											<Typography>{questionario.nome}</Typography>
+									<Grid container spacing={1} sx={{ display: "flex", justifyContent: "start" }}>
+										<Grid item xs={6} md={6} lg={1}>
+											<Button onClick={() => setSelectedTab(1)} fullWidth variant={selectedTab == 1 ? "contained" : "outlined"} color="secondary">
+												Respostas
+											</Button>
 										</Grid>
-										<Grid item xs={12}>
-											<Typography>{questionario.descricao}</Typography>
-											<Typography>{questionario.nome_tipo_servico}</Typography>
+										<Grid fullWidth item xs={6} md={6} lg={1}>
+											<Button onClick={() => setSelectedTab(2)} fullWidth variant={selectedTab == 2 ? "contained" : "outlined"} color="secondary">
+												Anexos
+											</Button>
 										</Grid>
+										{/* <Grid fullWidth item xs={4} md={4} lg={1}>
+											<Button onClick={() => setSelectedTab(3)} fullWidth variant={selectedTab == 3 ? "contained" : "outlined"} color="secondary">
+												Relatorios
+											</Button>
+										</Grid> */}
 									</Grid>
 								</CardContent>
 							</BlankCard>
 						</Grid>
-
-						{tarefas &&
+						{selectedTab == "1" &&
+							tarefas &&
 							tarefas.map((tarefa, index) => (
 								<Grid item xs={12} key={index}>
 									<BlankCard>
@@ -259,23 +373,131 @@ const DetalhesAtividade = () => {
 								</Grid>
 							))}
 
-						<Grid item xs={12}>
-							<BlankCard>
-								<CardContent
-									sx={{
-										display: "flex",
-										justifyContent: "space-between",
-									}}
-								>
-									<Button variant="contained" color="success" startIcon={<Save />}>
-										Finalizar Atividade
-									</Button>
-								</CardContent>
-							</BlankCard>
-						</Grid>
+						{selectedTab == "2" && <ListaAnexos />}
 					</Grid>
 				</Box>
 			</PageContainer>
+
+			<SpeedDial ariaLabel="SpeedDial controlled open example" sx={{ position: "fixed", bottom: 16, right: 16 }} icon={<SpeedDialIcon />} onClick={handleToggle} open={open}>
+				<SpeedDialAction
+					color="primary"
+					variant="contained"
+					key={"Anexos"}
+					icon={
+						<Box marginRight={6}>
+							<Button
+								variant="contained"
+								color="primary"
+								sx={{
+									width: "120px",
+									paddingX: 3,
+									paddingY: 2,
+								}}
+								startIcon={<AttachFile />}
+							>
+								<Typography variant="h6">Anexo</Typography>
+							</Button>
+						</Box>
+					}
+				/>
+
+				<SpeedDialAction
+					sx={{ marginBottom: 3 }}
+					color="primary"
+					variant="contained"
+					key={"Salvar alterações"}
+					icon={
+						<Box marginRight={6}>
+							<Button
+								onClick={handleAtualizaRespostas}
+								variant="contained"
+								color="success"
+								startIcon={<Save />}
+								sx={{
+									width: "120px",
+									paddingX: 3,
+									paddingY: 2,
+								}}
+							>
+								<Typography variant="h6">Salvar</Typography>
+							</Button>
+						</Box>
+					}
+				/>
+
+				<SpeedDialAction
+					sx={{ marginBottom: 3 }}
+					key={"Concluir Atividade"}
+					icon={
+						<Box marginRight={6}>
+							<Button
+								onClick={handleOpenDialog}
+								variant="contained"
+								color="secondary"
+								sx={{
+									width: "120px",
+									paddingX: 3,
+									paddingY: 2,
+								}}
+								startIcon={<Check />}
+							>
+								<Typography variant="h6">Concluir</Typography>
+							</Button>
+						</Box>
+					}
+				/>
+			</SpeedDial>
+
+			<Dialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				fullScreen={isMd}
+				onBackdropClick="false"
+				PaperProps={{
+					component: "form",
+					onSubmit: event => {
+						event.preventDefault();
+						const formData = new FormData(event.currentTarget);
+						const formJson = Object.fromEntries(formData.entries());
+						const email = formJson.email;
+						console.log(email);
+						handleClose();
+					},
+				}}
+			>
+				<DialogTitle>Confirmação</DialogTitle>
+				<DialogContent>
+					<DialogContentText>Esta ação conclui a sua atividade. Para melhorar a segurança da sua operação, digite abaixo a sua senha de acesso.</DialogContentText>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "row",
+							gap: 2,
+						}}
+					>
+						<TextField
+							onChange={e => setPass(e.target.value)}
+							autoFocus
+							required
+							margin="dense"
+							id="pass"
+							name="pass"
+							label="Senha"
+							type={matriculaShow ? "text" : "password"}
+							fullWidth
+							variant="standard"
+						/>
+						<IconButton onClick={() => setMatriculaShow(!matriculaShow)}>{matriculaShow ? <Visibility /> : <VisibilityOff />}</IconButton>
+					</Box>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialog}>Cancelar</Button>
+					<Button variant="contained" color="success" onClick={handleConcluirAtividade}>
+						Concluir
+					</Button>
+				</DialogActions>
+			</Dialog>
+			<Dialog fullScreen={isMd}></Dialog>
 		</>
 	);
 };

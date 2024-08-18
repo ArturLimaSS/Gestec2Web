@@ -36,5 +36,16 @@ export const useAtividadesStore = create((set, get) => ({
           } catch (error) {
 
           }
+     },
+     concluiAtividade: async (atividade_id, password) => {
+          set({ isLoading: true, error: null })
+          try {
+               const response = await api.put('/atividade/concluir', { atividade_id: atividade_id, password: password })
+               console.log(response)
+               return response;
+          } catch (error) {
+               set({ isLoading: false, error: error.message })
+               return error.response;
+          }
      }
 }))

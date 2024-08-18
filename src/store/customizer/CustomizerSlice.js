@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   activeDir: 'ltr',
   activeMode: 'light', // This can be light or dark
-  activeTheme: 'CUSTOM_THEME', // BLUE_THEME, GREEN_THEME, RED_THEME, BLACK_THEME, PURPLE_THEME, INDIGO_THEME
+  activeTheme: 'CUSTOM_THEME', // BLUE_THEME, GREEN_THEME, RED_THEME, BLACK_THEME, PURPLE_THEME, INDIGO_THEME, CUSTOM_THEME
   SidebarWidth: 270,
   MiniSidebarWidth: 87,
   TopbarHeight: 70,
@@ -13,7 +13,7 @@ const initialState = {
   isMobileSidebar: false,
   isHorizontal: false,
   isLanguage: 'en',
-  isCardShadow: false,
+  isCardShadow: true,
   borderRadius: 7,
 };
 

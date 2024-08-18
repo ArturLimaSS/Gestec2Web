@@ -17,35 +17,6 @@ const ListaAtividades = () => {
 		fetchAtividades();
 	}, []);
 
-	useEffect(() => {
-		console.log(atividades);
-	}, [atividades]);
-
-	const dispatch = useDispatch();
-	useEffect(() => {
-		dispatch(fetchTickets());
-	}, [dispatch]);
-
-	const getVisibleTickets = (tickets, filter, ticketSearch) => {
-		switch (filter) {
-			case "total_tickets":
-				return tickets.filter(c => !c.deleted && c.ticketTitle.toLocaleLowerCase().includes(ticketSearch));
-
-			case "Pending":
-				return tickets.filter(c => !c.deleted && c.Status === "Pending" && c.ticketTitle.toLocaleLowerCase().includes(ticketSearch));
-
-			case "Closed":
-				return tickets.filter(c => !c.deleted && c.Status === "Closed" && c.ticketTitle.toLocaleLowerCase().includes(ticketSearch));
-
-			case "Open":
-				return tickets.filter(c => !c.deleted && c.Status === "Open" && c.ticketTitle.toLocaleLowerCase().includes(ticketSearch));
-
-			default:
-				throw new Error(`Unknown filter: ${filter}`);
-		}
-	};
-
-	const tickets = useSelector(state => getVisibleTickets(state.ticketReducer.tickets, state.ticketReducer.currentFilter, state.ticketReducer.ticketSearch));
 	return (
 		<Box mt={4}>
 			<Box sx={{ maxWidth: "260px", ml: "auto" }} mb={3}>
@@ -119,7 +90,7 @@ const ListaAtividades = () => {
 									</TableCell>
 									<TableCell align="right">
 										<Tooltip title="Visualizar Atividade">
-											<IconButton component={Link} target="__blank" to={`/atividades/detalhes/${atividade.atividade_id}`}>
+											<IconButton component={Link} to={`/atividades/detalhes/${atividade.atividade_id}`}>
 												<RemoveRedEye size="18" />
 											</IconButton>
 										</Tooltip>
