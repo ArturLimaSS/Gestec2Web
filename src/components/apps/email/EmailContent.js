@@ -17,9 +17,9 @@ import { IconStar, IconAlertCircle, IconTrash } from '@tabler/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { starEmail, importantEmail, deleteEmail } from '../../../store/apps/email/EmailSlice';
 import emailIcon from 'src/assets/images/breadcrumb/emailSv.png';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import '../../../views/forms/quill-editor/Quill.css';
+// import ReactQuill from 'react-quill';
+// import 'react-quill/dist/quill.snow.css';
+// import '../../../views/forms/quill-editor/Quill.css';
 
 const EmailContent = () => {
   const emailDetails = useSelector(
@@ -164,13 +164,13 @@ const EmailContent = () => {
         {show ? (
           <Box mt={3}>
             <Paper variant="outlined">
-              <ReactQuill
+              {/* <ReactQuill
                 value={text}
                 onChange={(value) => {
                   setText(value);
                 }}
                 placeholder="Type here..."
-              />
+              /> */}
             </Paper>
           </Box>
         ) : null}
