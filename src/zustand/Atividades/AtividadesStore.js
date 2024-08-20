@@ -52,7 +52,10 @@ export const useAtividadesStore = create((set, get) => ({
           set({ isLoading: true, error: null })
           try {
                const response = await api.get('/atividade/anexo/relatorio', { params: { atividade_id: atividade_id } })
-               window.location.href = response.data.url
+               var anchor = document.createElement('a');
+               anchor.href = response.data.url;
+               anchor.target = '_blank';
+               anchor.click();
           } catch (error) {
                set({ isLoading: false, error: error.message })
                return error.response;
