@@ -45,6 +45,7 @@ export const useUserStore = create((set, get) => {
         return response
       } catch (error) {
         set({ error: error.message, isLoading: false })
+        return error.response
       }
     },
     updateUser: async (data) => {

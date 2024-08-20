@@ -10,19 +10,30 @@ import {
   DialogContentText,
   Grid,
   DialogActions,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Typography,
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { addContact } from '../../../store/apps/contacts/ContactSlice';
 import user1 from '../../../assets/images/profile/user-1.jpg';
 import { useUserStore } from '../../../zustand/Usuarios/UsuariosStore';
 import { useAuthStore } from '../../../zustand/Auth/AuthStore';
+import { useSnackbar, closeSnackbar } from 'notistack';
 
 const ContactAdd = () => {
   const [modal, setModal] = React.useState(false);
 
-  const { createUser } = useUserStore((store) => ({
-    createUser: store.createUser
+  const { createUser, fetchCargo, cargos } = useUserStore((store) => ({
+    createUser: store.createUser,
+    fetchCargo: store.fetchCargo,
+    cargos: store.cargos
   }))
+
+  useEffect(() => {
+    fetchCargo()
+  }, [])
 
   const toggle = () => {
     setModal(!modal);
@@ -32,6 +43,7 @@ const ContactAdd = () => {
     "email": "",
     "name": "",
     "cpf": "",
+    'matricula': '',
     "password": "",
     "cargo_id": "",
     "empresa_id": ""
@@ -45,14 +57,30 @@ const ContactAdd = () => {
     setUserData({ ...userData, empresa_id: empresa.empresa_id })
   }, [empresa])
 
+  const { enqueueSnackBar } = useSnackbar()
+
   const handleSubmit = async (e) => {
+    enqueueSnackBar(<Box sx={{
+      color: '#fff',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 1,
+    }}>
+      <CircularProgress sx={{
+        color: '#fff'
+      }} />
+      <Typography variant="h6">Processando...</Typography>
+    </Box>, {
+      variant: 'info',
+    })
     e.preventDefault();
     const response = await createUser(userData)
     if (response.status == 201) {
-      alert("Usuário cadastrado com sucesso!");
+      enqueueSnackBar("Usuário cadastrado com sucesso!");
       toggle()
     } else {
-      alert("erro")
+      enqueueSnackBar("Ocorreu um erro ao cadastrar o usuário. Tente novamente.");
     }
   };
 
@@ -115,16 +143,36 @@ const ContactAdd = () => {
                   />
                 </Grid>
 
+                <Grid item xs={12} lg={12}>
+                  <FormLabel>Matrícula</FormLabel>
+                  <TextField
+                    id="email"
+                    size="small"
+                    variant="outlined"
+                    type='email'
+                    fullWidth
+                    value={userData.matricula}
+                    onChange={(e) => setUserData({ ...userData, matricula: e.target.value })}
+                  />
+                </Grid>
+
                 <Grid item xs={12} lg={6}>
                   <FormLabel>Cargo</FormLabel>
-                  <TextField
+                  <Select
                     id="company"
                     size="small"
                     variant="outlined"
                     fullWidth
                     value={userData.cargo_id}
                     onChange={(e) => setUserData({ ...userData, cargo_id: e.target.value })}
-                  />
+                  >
+                    <MenuItem disabled value="">Selecione o Cargo</MenuItem>
+                    {cargos && cargos.map((cargo) => (
+                      <MenuItem key={cargo.id_cargo} value={cargo.id_cargo}>
+                        {cargo.nome_cargo}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </Grid>
                 <Grid item xs={12} lg={6}>
                   <FormLabel>Senha</FormLabel>
@@ -136,19 +184,6 @@ const ContactAdd = () => {
                     fullWidth
                     value={userData.password}
                     onChange={(e) => setUserData({ ...userData, password: e.target.value })}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={6}>
-                  <FormLabel>Email</FormLabel>
-                  <TextField
-                    id="email"
-                    type="email"
-                    required
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    value={userData.email}
-                    onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                   />
                 </Grid>
               </Grid>

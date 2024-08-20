@@ -25,7 +25,12 @@ export const useTiposServicosStore = create((set, get) => ({
   deleteTipoServico: async tipo_servico_id => {
     set({ isLoading: true, error: null });
     try {
-      await api.put(`tipo-servico/excluir`, { tipo_servico_id: tipo_servico_id });
-    } catch (error) { }
+      const response = await api.put(`tipo-servico/excluir`, { tipo_servico_id: tipo_servico_id });
+      set((state) => ({ ...state, listaTiposServicos: state.listaTiposServicos.filter(ts => ts.tipo_servico_id !== tipo_servico_id) }));
+      return response;
+    } catch (error) {
+      set({ isLoading: false, error: error.message });
+      return error.response;
+    }
   }
 }))
