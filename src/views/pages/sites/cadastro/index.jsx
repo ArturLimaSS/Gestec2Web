@@ -12,11 +12,10 @@ import { useTipoChave } from "../../../../zustand/TipoChave/tipoChaveStore";
 import { CadastroTipoAcesso } from "../../../../components/tipo-acesso/cadastro";
 import { CadastroTipoChave } from "../../../../components/tipo-chave/Cadastro";
 import { useUtils } from "../../../../zustand/Utils/utilStore";
+import { useAlert } from "../../../../context/useAlert";
 
 const SitesCadastro = () => {
-	const { empresa } = useAuthStore(store => ({
-		empresa: store.empresa,
-	}));
+	const { show } = useAlert();
 
 	const { buscaEndereco, endereco } = useUtils(store => ({
 		buscaEndereco: store.buscaEndereco,
@@ -59,13 +58,9 @@ const SitesCadastro = () => {
 	}, [endereco]);
 
 	useEffect(() => {
-		setSiteData({
-			...siteData,
-			empresa_id: empresa.empresa_id,
-		});
 		fetchTipoAcessos();
 		fetchTipoChave();
-	}, [empresa]);
+	}, []);
 
 	const [focusedField, setFocusedField] = useState("");
 
@@ -84,7 +79,6 @@ const SitesCadastro = () => {
 
 	const handleResetSiteData = () => {
 		setSiteData({
-			empresa_id: "",
 			nome_site: "",
 			endereco_rua: "",
 			endereco_numero: "",
@@ -102,10 +96,10 @@ const SitesCadastro = () => {
 		e.preventDefault();
 		const response = await createSite(siteData);
 		if (response.status === 201) {
-			alert("Site cadastrado com sucesso!");
+			show("Site cadastrado com sucesso!", "success");
 			handleResetSiteData();
 		} else {
-			alert("Ocorreu um erro ao cadastrar o site.");
+			show(response.data.message, "error");
 		}
 	};
 

@@ -11,7 +11,7 @@ export const useUtils = create((set, get) => {
       try {
         if (cep.length > 5) {
           const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`)
-          console.log(response)
+
           set({ endereco: response.data });
           return response
         } else {
