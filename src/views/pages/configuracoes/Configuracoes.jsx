@@ -11,60 +11,55 @@ import NotificationTab from "../../../components/pages/account-setting/Notificat
 import BillsTab from "../../../components/pages/account-setting/BillsTab";
 import SecurityTab from "../../../components/pages/account-setting/SecurityTab";
 import ConfigTab from "../../../components/pages/configuracoes/ConfiguracoesTab";
+import { useUtils } from "../../../zustand/Utils/utilStore";
 
 const BCrumb = [
-  {
-    title: "Configurações de Conta",
-  },
+	{
+		title: "Configurações de Conta",
+	},
 ];
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+	const { children, value, index, ...other } = props;
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
+	return (
+		<div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+			{value === index && <Box>{children}</Box>}
+		</div>
+	);
 }
 
 function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
+	return {
+		id: `simple-tab-${index}`,
+		"aria-controls": `simple-tabpanel-${index}`,
+	};
 }
 
 const Configuracoes = () => {
-  const [value, setValue] = React.useState(0);
+	const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+	};
 
-  return (
-    <PageContainer title="Configurações" description="Configurações de conta">
-      {/* breadcrumb */}
-      <Breadcrumb title="Configurações" items={BCrumb} />
-      {/* end breadcrumb */}
+	const { selected_tab } = useUtils(store => store);
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <BlankCard>
-            <CardContent>
-              <ConfigTab />
-            </CardContent>
-          </BlankCard>
-        </Grid>
-      </Grid>
-    </PageContainer>
-  );
+	return (
+		<PageContainer title="Configurações" description="Configurações de conta">
+			{/* breadcrumb */}
+			<Breadcrumb title="Configurações" items={BCrumb} />
+			{/* end breadcrumb */}
+
+			<Grid container spacing={3}>
+				<Grid item xs={12}>
+					<BlankCard>
+						<CardContent>{selected_tab.value == 1 && <ConfigTab />}</CardContent>
+					</BlankCard>
+				</Grid>
+			</Grid>
+		</PageContainer>
+	);
 };
 
 export default Configuracoes;

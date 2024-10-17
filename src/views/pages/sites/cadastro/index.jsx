@@ -7,10 +7,23 @@ import { ufList } from "../../../../_mockApis/ufs/ufList";
 import { useAuthStore } from "../../../../zustand/Auth/AuthStore";
 import { SelectCreate } from "../../../../components/forms/select-create/SelectCreate";
 import { useSitesStore } from "../../../../zustand/Sites/SiteStore";
+import { useTipoAcesso } from "../../../../zustand/TipoAcesso/tipoAcessoStore";
+import { useTipoChave } from "../../../../zustand/TipoChave/tipoChaveStore";
+import { CadastroTipoAcesso } from "../../../../components/tipo-acesso/cadastro";
 
 const SitesCadastro = () => {
 	const { empresa } = useAuthStore(store => ({
 		empresa: store.empresa,
+	}));
+
+	const { lista_tipo_acesso, fetchTipoAcessos } = useTipoAcesso(store => ({
+		lista_tipo_acesso: store.lista_tipo_acesso,
+		fetchTipoAcessos: store.fetchTipoAcessos,
+	}));
+
+	const { lista_tipo_chave, fetchTipoChave } = useTipoChave(store => ({
+		lista_tipo_chave: store.lista_tipo_chave,
+		fetchTipoChave: store.fetchTipoChave,
 	}));
 
 	const { createSite } = useSitesStore(store => store);
@@ -34,11 +47,9 @@ const SitesCadastro = () => {
 			...siteData,
 			empresa_id: empresa.empresa_id,
 		});
+		fetchTipoAcessos();
+		fetchTipoChave();
 	}, [empresa]);
-
-	useEffect(() => {
-		console.log(siteData);
-	}, [siteData]);
 
 	const [focusedField, setFocusedField] = useState("");
 
@@ -124,23 +135,12 @@ const SitesCadastro = () => {
 												<MenuItem disabled value={null}>
 													-- Selecione --
 												</MenuItem>
-												<MenuItem value="publico">Público</MenuItem>
-												<MenuItem value="restrito">Restrito</MenuItem>
-												<MenuItem value="outro">Outro</MenuItem>
-												<Box
-													sx={{
-														display: "flex",
-														justifyContent: "center",
-														alignItems: "center",
-
-														paddingTop: "1.125rem",
-														paddingLeft: "1.125rem",
-														paddingRight: "1.125rem",
-													}}
-												>
-													{" "}
-													<Button fullWidth>Cadastro</Button>
-												</Box>
+												{lista_tipo_acesso?.map((tipo, index) => (
+													<MenuItem value={tipo.tipo_acesso_id} key={tipo.tipo_acesso_id}>
+														{tipo.tipo_acesso_nome}
+													</MenuItem>
+												))}
+												<CadastroTipoAcesso />
 											</Select>
 										</FormControl>
 									</Grid>
@@ -164,13 +164,9 @@ const SitesCadastro = () => {
 												<MenuItem disabled value={null}>
 													-- Selecione --
 												</MenuItem>
-												{[
-													{ value: "fisica", label: "Física" },
-													{ value: "eletronica", label: "Eletrônica" },
-													{ value: "outro", label: "Outro" },
-												].map((item, index) => (
-													<MenuItem key={index} value={item.value}>
-														{item.label}
+												{lista_tipo_chave?.map(tipo => (
+													<MenuItem value={tipo.tipo_chave_id} key={tipo.tipo_chave_id}>
+														{tipo.tipo_chave_nome}
 													</MenuItem>
 												))}
 											</Select>
