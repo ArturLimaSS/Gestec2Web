@@ -21,6 +21,7 @@ export const useAuthStore = create((set) => {
         return response
       } catch (error) {
         set({ error: error.response?.data?.message || 'Error occurred', status: 'failed' });
+        return error.response
       }
     },
     logout: async () => {

@@ -18,8 +18,10 @@ import { ReactComponent as LightLogoIcon } from "src/assets/images/logos/light-l
 
 import AuthSocialButtons from './AuthSocialButtons';
 import { useAuthStore } from '../../../zustand/Auth/AuthStore';
+import { useAlert } from '../../../context/useAlert';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+  const { show } = useAlert();
   const navigate = useNavigate();
   const [authData, setAuthData] = useState({
     email: "",
@@ -32,10 +34,17 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
   }))
 
   const handleLogin = async (e) => {
+    show("", "loading")
     e.preventDefault();
     const response = await authenticate(authData);
+
     if (response.status == "200") {
-      checkLogin(navigate);
+      show("Autenticação realizada com sucesso!", "success")
+      setTimeout(() => {
+        checkLogin(navigate);
+      }, 1500)
+    } else {
+      show(response.data.message, "error");
     }
   }
 

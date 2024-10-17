@@ -9,39 +9,52 @@ import { useAuthStore } from "./zustand/Auth/AuthStore";
 import { useEffect } from "react";
 import { PublicRoutes } from "./routes/PublicRoutes";
 import { SnackbarProvider } from "notistack";
+import { AlertProvider } from "./context/useAlert";
+import Slide from "@mui/material/Slide"; // Para o efeito fade-up
 
 function App() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const token = localStorage.getItem("token");
+	const navigate = useNavigate();
+	const location = useLocation();
+	const token = localStorage.getItem("token");
 
-  const { checkLogin, isLogged } = useAuthStore(store => ({
-    checkLogin: store.checkLogin,
-    isLogged: store.isLogged,
-  }));
+	const { checkLogin, isLogged } = useAuthStore(store => ({
+		checkLogin: store.checkLogin,
+		isLogged: store.isLogged,
+	}));
 
-  useEffect(() => {
-    if (token && location.pathname !== "/") {
-      checkLogin(navigate);
-    }
-  }, []);
+	useEffect(() => {
+		if (token && location.pathname !== "/") {
+			checkLogin(navigate);
+		}
+	}, []);
 
-  const loggedRouter = isLogged || token ? Router : PublicRoutes;
+	const loggedRouter = isLogged || token ? Router : PublicRoutes;
 
-  const routing = useRoutes(loggedRouter);
-  const theme = ThemeSettings();
-  const customizer = useSelector(state => state.customizer);
+	const routing = useRoutes(loggedRouter);
+	const theme = ThemeSettings();
+	const customizer = useSelector(state => state.customizer);
 
-  return (
-    <ThemeProvider theme={theme}>
-      <RTL direction={customizer.activeDir}>
-        <SnackbarProvider>
-          <CssBaseline />
-          <ScrollToTop>{routing}</ScrollToTop>
-        </SnackbarProvider>
-      </RTL>
-    </ThemeProvider>
-  );
+	return (
+		<SnackbarProvider
+			maxSnack={1}
+			hideIconVariant
+			autoHideDuration={3000}
+			anchorOrigin={{
+				vertical: "bottom", // Alinha na parte inferior
+				horizontal: "center", // Alinha ao centro
+			}}
+			// TransitionComponent={Slide} // Efeito de transição
+		>
+			<AlertProvider>
+				<ThemeProvider theme={theme}>
+					<RTL direction={customizer.activeDir}>
+						<CssBaseline />
+						<ScrollToTop>{routing}</ScrollToTop>
+					</RTL>
+				</ThemeProvider>
+			</AlertProvider>
+		</SnackbarProvider>
+	);
 }
 
 export default App;
