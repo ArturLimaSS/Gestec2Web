@@ -274,87 +274,107 @@ const DetalhesAtividade = () => {
 						</Grid>
 						{selectedTab == "1" ? (
 							<>
-								{tarefas?.map(tarefa => (
-									<CustomCard key={tarefa.tarefa_id}>
-										<Card.Title title={tarefa.nome_tarefa} />
-										{perguntas &&
-											perguntas.map((pergunta, index) => {
-												if (pergunta.tarefa_id === tarefa.tarefa_id) {
-													const respostaAtual = tempRespostas.find(res => res.pergunta_id === pergunta.pergunta_id) || {};
+								{tarefas &&
+									tarefas.map((tarefa, index) => (
+										<Grid item xs={12} key={index}>
+											<BlankCard>
+												<CardContent>
+													<Typography variant="h6" component="div" gutterBottom>
+														{tarefa.nome_tarefa}
+													</Typography>
+													<Typography>{tarefa.descricao}</Typography>
+												</CardContent>
+												<Divider />
+												<CardContent
+													sx={{
+														display: "flex",
+														flexDirection: "column",
+														gap: 2,
+													}}
+												>
+													{perguntas &&
+														perguntas.map((pergunta, index) => {
+															if (pergunta.tarefa_id === tarefa.tarefa_id) {
+																const respostaAtual = tempRespostas.find(res => res.pergunta_id === pergunta.pergunta_id) || {};
 
-													if (pergunta.tipo_resposta === "text" || pergunta.tipo_resposta === "number") {
-														return (
-															<View key={index}>
-																<TextInput
-																	value={respostaAtual.resposta || ""}
-																	onChangeText={text => handleUpdateTempRespostas(pergunta, text)}
-																	label={pergunta.pergunta}
-																	keyboardType={pergunta.tipo_resposta === "number" ? "numeric" : "default"}
-																/>
-																<Divider />
-															</View>
-														);
-													}
-
-													if (pergunta.tipo_resposta === "select") {
-														return (
-															<View key={index}>
-																<Text>{pergunta.pergunta}</Text>
-																<Picker
-																	selectedValue={respostaAtual.resposta || ""}
-																	onValueChange={value => handleUpdateTempRespostas(pergunta, value)}
-																>
-																	<Picker.Item label="Selecione" value="" />
-																	{JSON.parse(pergunta.opcoes).map((opcao, idx) => (
-																		<Picker.Item key={idx} label={opcao} value={opcao} />
-																	))}
-																</Picker>
-															</View>
-														);
-													}
-
-													if (pergunta.tipo_resposta === "checkbox") {
-														return (
-															<View>
-																<Text>{pergunta.pergunta}</Text>
-																{JSON.parse(pergunta.opcoes).map((opcao, idx) => {
-																	const isChecked = respostaAtual.resposta.includes(opcao);
+																if (pergunta.tipo_resposta === "text" || pergunta.tipo_resposta === "number") {
 																	return (
-																		<Checkbox.Item
-																			key={idx}
-																			label={opcao}
-																			status={isChecked ? "checked" : "unchecked"}
-																			onPress={() => {
-																				const updatedValue = isChecked
-																					? respostaAtual.resposta.filter(r => r !== opcao)
-																					: [...(respostaAtual.resposta || []), opcao];
-																				handleUpdateTempRespostas(pergunta, updatedValue);
-																			}}
-																		/>
+																		<div key={index}>
+																			<TextField
+																				value={respostaAtual.resposta || ""}
+																				onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																				label={pergunta.pergunta}
+																				fullWidth
+																				type={pergunta.tipo_resposta === "number" ? "number" : "text"}
+																			/>
+																			<Divider />
+																		</div>
 																	);
-																})}
-															</View>
-														);
-													}
+																}
 
-													if (pergunta.tipo_resposta === "radio") {
-														return (
-															<View key={index}>
-																<Text>{pergunta.pergunta}</Text>
-																<RadioButton.Group onValueChange={value => handleUpdateTempRespostas(pergunta, value)} value={respostaAtual.resposta}>
-																	{JSON.parse(pergunta.opcoes).map((opcao, idx) => (
-																		<RadioButton.Item key={idx} label={opcao} value={opcao} />
-																	))}
-																</RadioButton.Group>
-															</View>
-														);
-													}
-												}
-												return null; // Certifique-se de retornar null caso a pergunta não corresponda à tarefa
-											})}
-									</CustomCard>
-								))}
+																if (pergunta.tipo_resposta === "select") {
+																	return (
+																		<FormControl fullWidth key={index}>
+																			<InputLabel id={`label-${pergunta.pergunta_id}`}>{pergunta.pergunta}</InputLabel>
+																			<Select
+																				value={respostaAtual.resposta || ""}
+																				onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																				fullWidth
+																				labelId={`label-${pergunta.pergunta_id}`}
+																				label={pergunta.pergunta}
+																			>
+																				<MenuItem value="">Selecione</MenuItem>
+																				{JSON.parse(pergunta.opcoes).map((opcao, idx) => (
+																					<MenuItem key={idx} value={opcao}>
+																						{opcao}
+																					</MenuItem>
+																				))}
+																			</Select>
+																		</FormControl>
+																	);
+																}
 
+																if (pergunta.tipo_resposta === "checkbox") {
+																	return (
+																		<FormControl key={index}>
+																			<FormLabel>{pergunta.pergunta}</FormLabel>
+																			<FormGroup>
+																				{JSON.parse(pergunta.opcoes).map((opcao, idx) => {
+																					return (
+																						<FormControlLabel
+																							key={idx}
+																							control={<Checkbox checked={respostaAtual.resposta == opcao} />}
+																							label={opcao}
+																							onChange={e => handleUpdateTempRespostas(pergunta, opcao, e.target.checked)}
+																						/>
+																					);
+																				})}
+																			</FormGroup>
+																		</FormControl>
+																	);
+																}
+
+																if (pergunta.tipo_resposta === "radio") {
+																	return (
+																		<FormControl key={index}>
+																			<FormLabel>{pergunta.pergunta}</FormLabel>
+																			<RadioGroup
+																				value={respostaAtual.resposta || ""}
+																				onChange={e => handleUpdateTempRespostas(pergunta, e.target.value)}
+																			>
+																				<FormControlLabel value="Sim" control={<Radio />} label="Sim" />
+																				<FormControlLabel value="Não" control={<Radio />} label="Não" />
+																			</RadioGroup>
+																		</FormControl>
+																	);
+																}
+															}
+															return null; // Certifique-se de retornar null caso a pergunta não corresponda à tarefa
+														})}
+												</CardContent>
+											</BlankCard>
+										</Grid>
+									))}
 								{tempAtividade.atividade_endereco && (
 									<Grid item xs={12}>
 										<BlankCard>
