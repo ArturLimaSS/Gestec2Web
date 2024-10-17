@@ -10,10 +10,17 @@ import { useSitesStore } from "../../../../zustand/Sites/SiteStore";
 import { useTipoAcesso } from "../../../../zustand/TipoAcesso/tipoAcessoStore";
 import { useTipoChave } from "../../../../zustand/TipoChave/tipoChaveStore";
 import { CadastroTipoAcesso } from "../../../../components/tipo-acesso/cadastro";
+import { CadastroTipoChave } from "../../../../components/tipo-chave/Cadastro";
+import { useUtils } from "../../../../zustand/Utils/utilStore";
 
 const SitesCadastro = () => {
 	const { empresa } = useAuthStore(store => ({
 		empresa: store.empresa,
+	}));
+
+	const { buscaEndereco, endereco } = useUtils(store => ({
+		buscaEndereco: store.buscaEndereco,
+		endereco: store.endereco,
 	}));
 
 	const { lista_tipo_acesso, fetchTipoAcessos } = useTipoAcesso(store => ({
@@ -31,16 +38,25 @@ const SitesCadastro = () => {
 	const [siteData, setSiteData] = useState({
 		empresa_id: "",
 		nome_site: "",
-		endereco_rua: "",
+		endereco_rua: endereco.logradouro || "",
 		endereco_numero: "",
-		endereco_cidade: "",
-		endereco_estado: "",
+		endereco_cidade: endereco.localidade || "",
+		endereco_estado: endereco.uf || "",
 		endereco_cep: "",
 		tipo_acesso: "",
 		tipo_chave: "",
 		tipo_equipamento: "",
 		nivel_prioridade: "",
 	});
+
+	useEffect(() => {
+		setSiteData({
+			...siteData,
+			endereco_rua: endereco.logradouro,
+			endereco_cidade: endereco.localidade,
+			endereco_estado: endereco.uf,
+		});
+	}, [endereco]);
 
 	useEffect(() => {
 		setSiteData({
@@ -57,8 +73,13 @@ const SitesCadastro = () => {
 		setFocusedField(field);
 	};
 
+	const handleGetCep = () => {
+		buscaEndereco(siteData.endereco_cep);
+	};
+
 	const handleBlur = field => () => {
 		setFocusedField("");
+		handleGetCep();
 	};
 
 	const handleResetSiteData = () => {
@@ -169,6 +190,7 @@ const SitesCadastro = () => {
 														{tipo.tipo_chave_nome}
 													</MenuItem>
 												))}
+												<CadastroTipoChave />
 											</Select>
 										</FormControl>
 									</Grid>
