@@ -414,18 +414,6 @@ const DetalhesAtividade = () => {
 					sx={{ marginBottom: 3 }}
 					color="primary"
 					variant="contained"
-					key={"Anexos"}
-					icon={
-						<Box onClick={() => setSelectedTab(2)} marginRight={6}>
-							<DialogAnexos setOpenMenu={e => setOpenMenu(true)} />
-						</Box>
-					}
-				/>
-
-				<SpeedDialAction
-					sx={{ marginBottom: 3 }}
-					color="primary"
-					variant="contained"
 					key={"Gerar Relatório"}
 					icon={
 						<Box marginRight={6}>
@@ -445,9 +433,30 @@ const DetalhesAtividade = () => {
 						</Box>
 					}
 				/>
+				<SpeedDialAction
+					sx={{ marginBottom: 3 }}
+					key={"Concluir Atividade"}
+					icon={
+						<Box marginRight={6}>
+							<Button
+								onClick={handleOpenDialog}
+								variant="contained"
+								color="secondary"
+								sx={{
+									width: "120px",
+									paddingX: 3,
+									paddingY: 2,
+								}}
+								startIcon={<Check />}
+							>
+								<Typography variant="h6">Concluir</Typography>
+							</Button>
+						</Box>
+					}
+				/>
 
 				<SpeedDialAction
-					sx={{ marginBottom: 6 }}
+					sx={{ marginBottom: 3 }}
 					color="primary"
 					variant="contained"
 					key={"Salvar alterações"}
@@ -472,22 +481,12 @@ const DetalhesAtividade = () => {
 
 				<SpeedDialAction
 					sx={{ marginBottom: 3 }}
-					key={"Concluir Atividade"}
+					color="primary"
+					variant="contained"
+					key={"Anexos"}
 					icon={
-						<Box marginRight={6}>
-							<Button
-								onClick={handleOpenDialog}
-								variant="contained"
-								color="secondary"
-								sx={{
-									width: "120px",
-									paddingX: 3,
-									paddingY: 2,
-								}}
-								startIcon={<Check />}
-							>
-								<Typography variant="h6">Concluir</Typography>
-							</Button>
+						<Box onClick={() => setSelectedTab(2)} marginRight={6}>
+							<DialogAnexos setOpenMenu={e => setOpenMenu(true)} />
 						</Box>
 					}
 				/>

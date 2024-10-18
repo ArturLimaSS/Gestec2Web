@@ -30,6 +30,7 @@ import { useQuestionarioStore } from "../../../zustand/Questionario/Questionario
 import { useUserStore } from "../../../zustand/Usuarios/UsuariosStore";
 import { useAtividadesStore } from "../../../zustand/Atividades/AtividadesStore";
 import { useSnackbar } from "notistack";
+import { useAlert } from "../../../context/useAlert";
 
 const BCrumb = [
 	{
@@ -56,9 +57,7 @@ const CadastroAtividade = () => {
 		etapa_id: "1",
 	});
 
-	useEffect(() => {
-		console.log(atividadeData);
-	}, [atividadeData]);
+	const { show } = useAlert();
 
 	const { createAtividades } = useAtividadesStore(store => ({
 		createAtividades: store.createAtividades,
@@ -71,10 +70,6 @@ const CadastroAtividade = () => {
 		users: store.users,
 		fetchUser: store.fetchUser,
 	}));
-
-	useEffect(() => {
-		console.log(atividadeData);
-	}, [atividadeData]);
 
 	useEffect(() => {
 		fetchUser("4");
@@ -114,15 +109,27 @@ const CadastroAtividade = () => {
 	};
 
 	const handleCadastraAtividade = async () => {
+		if (atividadeData.atividade_tipo == "ordem_servico" && atividadeData.questionario_id == "") {
+			show("Selecione um questionário para prosseguir", "warning");
+			handleClose();
+			return;
+		}
+
+		if (atividadeData.atividade_tipo == "ordem_servico" && atividadeData.responsavel_id == "") {
+			show("Selecione um responsável para prosseguir", "warning");
+			handleClose();
+			return;
+		}
+
 		const response = await createAtividades(atividadeData);
 		if (response.status == 201) {
 			setOpen(false);
-			enqueueSnackbar("Atividade cadastrada com sucesso!", { variant: "success" });
+			show("Atividade cadastrada com sucesso!", "success");
 			setTimeout(() => {
 				navigate("/atividades/lista");
 			}, 1000);
 		} else {
-			enqueueSnackbar("Erro ao cadastrar atividade!", { variant: "error" });
+			show("Erro ao cadastrar atividade!", "error");
 		}
 	};
 

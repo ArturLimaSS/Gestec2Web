@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useUploadStore } from "../../../zustand/Uploader/UploadStore";
 import { useSnackbar, closeSnackbar } from "notistack";
 import { useParams } from "react-router";
+import { useAlert } from "../../../context/useAlert";
 
 export const DialogAnexos = ({ setOpenMenu }) => {
 	const fileInputRef = useRef(null); // Referência para o input
@@ -15,6 +16,8 @@ export const DialogAnexos = ({ setOpenMenu }) => {
 		fetchFiles: store.fetchFiles,
 	}));
 
+	const { show } = useAlert();
+
 	useEffect(() => {
 		fetchFiles(atividade_id);
 	}, []);
@@ -22,35 +25,27 @@ export const DialogAnexos = ({ setOpenMenu }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const handleUpload = async () => {
-		enqueueSnackbar(
-			<Typography
-				sx={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					color: "#fff",
-				}}
-			>
-				<CircularProgress
-					sx={{
-						color: "#fff",
-					}}
-				/>
-				Aguarde
-			</Typography>
-		),
-			{
-				variant: "info",
-				hideIconVariant: "true",
-			};
+		show(null, "loading");
 
+		if (!description) {
+			show("Descrição da imagem é obrigatório", "error");
+			return;
+		}
 		const formData = new FormData();
 		formData.append("file", file);
 		formData.append("descricao", description);
 		formData.append("atividade_id", atividade_id);
 		formData.append("nome_arquivo", file.name);
 		const response = await upload(formData);
-		console.log(response);
+		if (response.status == 200) {
+			show(response.data.message, "success");
+			fetchFiles(atividade_id);
+			setFile(null);
+			setDescription("");
+			handleClose();
+		} else {
+			show(response.data.message, "error");
+		}
 	};
 	const isMd = useMediaQuery(theme => theme.breakpoints.down("md"));
 
