@@ -38,8 +38,9 @@ const ListaAtividades = () => {
 							<TableCell>
 								<Typography variant="h6">Etapa</Typography>
 							</TableCell>
+
 							<TableCell>
-								<Typography variant="h6">Data/Hora</Typography>
+								<Typography variant="h6">Previsão</Typography>
 							</TableCell>
 							<TableCell align="center">
 								<Typography variant="h6">Ação</Typography>
@@ -84,8 +85,8 @@ const ListaAtividades = () => {
 												gap: 1,
 											}}
 										>
-											<Typography>{new Date(atividade.atividade_created_at).toLocaleDateString("pt-BR")}</Typography>
-											<Typography>{new Date(atividade.atividade_created_at).toLocaleTimeString("pt-BR")}</Typography>
+											<Typography>{new Date(atividade.previsao).toLocaleDateString("pt-BR")}</Typography>
+											{/* <Typography>{new Date(atividade.atividade_created_at).toLocaleTimeString("pt-BR")}</Typography> */}
 										</Typography>
 									</TableCell>
 									<TableCell align="right">

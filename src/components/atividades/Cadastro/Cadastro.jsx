@@ -49,11 +49,16 @@ const CadastroAtividade = () => {
 		atividade_endereco: "",
 		questionario_id: "",
 		atividade_nome: "",
+		previsao: new Date().toLocaleDateString("en-CA"),
 		atividade_descricao: "",
 		empresa_id: "",
 		responsavel_id: "",
 		etapa_id: "1",
 	});
+
+	useEffect(() => {
+		console.log(atividadeData);
+	}, [atividadeData]);
 
 	const { createAtividades } = useAtividadesStore(store => ({
 		createAtividades: store.createAtividades,
@@ -179,6 +184,16 @@ const CadastroAtividade = () => {
 												label="Titulo da Atividade"
 												value={atividadeData.atividade_nome}
 												onChange={e => setAtividadeData({ ...atividadeData, atividade_nome: e.target.value })}
+											/>
+										</Grid>
+
+										<Grid item xs={12}>
+											<TextField
+												type="date"
+												fullWidth
+												label="Previsão de término"
+												value={atividadeData.previsao}
+												onChange={e => setAtividadeData({ ...atividadeData, previsao: e.target.value })}
 											/>
 										</Grid>
 
