@@ -157,23 +157,21 @@ const CadastroAtividade = () => {
 										</FormControl>
 									</Grid>
 									<Grid container spacing={3} sx={{ marginTop: 0 }}>
-										{atividadeData.atividade_tipo == "ordem_servico" && (
-											<Grid item xs={12}>
-												<Autocomplete
-													onChange={e => setAtividadeData({ ...atividadeData, ativo_id: e.target.value })}
-													renderInput={params => <TextField {...params} variant="outlined" label={"Selecione o Site"} placeholder="Digite para filtrar..." />}
-													options={
-														listaSites &&
-														listaSites.map(site => {
-															return {
-																value: site.site_id,
-																label: site.nome_site,
-															};
-														})
-													}
-												/>
-											</Grid>
-										)}
+										<Grid item xs={12}>
+											<Autocomplete
+												onChange={e => setAtividadeData({ ...atividadeData, ativo_id: e.target.value })}
+												renderInput={params => <TextField {...params} variant="outlined" label={"Selecione o Site"} placeholder="Digite para filtrar..." />}
+												options={
+													listaSites &&
+													listaSites.map(site => {
+														return {
+															value: site.site_id,
+															label: site.nome_site,
+														};
+													})
+												}
+											/>
+										</Grid>
 
 										<Grid item xs={12}>
 											<TextField
@@ -184,7 +182,7 @@ const CadastroAtividade = () => {
 											/>
 										</Grid>
 
-										{atividadeData.atividade_tipo == "relatorio" && (
+										{/* {atividadeData.atividade_tipo == "relatorio" && (
 											<Grid item xs={12}>
 												<TextField
 													fullWidth
@@ -193,7 +191,7 @@ const CadastroAtividade = () => {
 													onChange={e => setAtividadeData({ ...atividadeData, atividade_endereco: e.target.value })}
 												></TextField>
 											</Grid>
-										)}
+										)} */}
 
 										{atividadeData.atividade_tipo == "ordem_servico" && (
 											<Grid item xs={12}>
