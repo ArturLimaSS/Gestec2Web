@@ -60,7 +60,17 @@ export const useAtividadesStore = create((set, get) => ({
                set({ isLoading: false, error: error.message })
                return error.response;
           }
+     },
+     excluirAtividade: async (atividade_id) => {
+          set({ isLoading: true, error: null });
+          try {
+               const response = await api.put('/atividade/excluir', { atividade_id: atividade_id })
+               set((state) => ({ isLoading: false, atividades: state.atividades.filter((a) => a.atividade_id !== atividade_id) }));
+               return response;
+          } catch (error) {
+               set({ isLoading: false, error: error })
+               return error.response;
+          }
      }
-
 
 }))

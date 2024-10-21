@@ -53,6 +53,7 @@ import { useRespostaStore } from "../../../../zustand/Respostas/RespostaStore";
 import { IconEyeOff } from "@tabler/icons";
 import { DialogAnexos } from "../../../../components/atividades/Anexos/Anexos";
 import ListaAnexos from "../../../../components/atividades/Anexos/ListaAnexos/ListaAnexos";
+import { useAlert } from "../../../../context/useAlert";
 
 const actions = [
 	{ icon: <FileCopy />, name: "Copy" },
@@ -62,6 +63,7 @@ const actions = [
 ];
 
 const DetalhesAtividade = () => {
+	const { show } = useAlert();
 	const theme = useTheme();
 	const isMd = useMediaQuery(theme => theme.breakpoints.down("md"));
 	const location = useLocation();
@@ -171,20 +173,7 @@ const DetalhesAtividade = () => {
 
 	const handleAtualizaRespostas = async () => {
 		handleClose();
-		enqueueSnackbar(
-			<Box display={"flex"} color={"white"} flexDirection={"row"} gap={3} justifyContent={"center"} alignItems={"center"}>
-				<CircularProgress
-					sx={{
-						color: "#fff",
-					}}
-				/>{" "}
-				<Typography>Atualizando...</Typography>
-			</Box>,
-			{
-				variant: "info",
-				hideIconVariant: "true",
-			}
-		);
+		show(null, "loading");
 		const arr1 = tempRespostas.map(r => r.resposta).sort();
 		const arr2 = respostas.map(r => r.resposta).sort();
 
@@ -192,8 +181,7 @@ const DetalhesAtividade = () => {
 
 		if (areEqual) {
 			setTimeout(() => {
-				closeSnackbar();
-				enqueueSnackbar("Nenhuma informação para atualizar!", { variant: "warning" });
+				show("Nenhuma informação para atualizar", "warning");
 			}, 485);
 			return;
 		}
@@ -201,7 +189,9 @@ const DetalhesAtividade = () => {
 		const response = await updateResposta(tempRespostas);
 		if (response.status === 200) {
 			closeSnackbar();
-			enqueueSnackbar("Respostas atualizadas com sucesso!", { variant: "success" });
+			show("Respostas atualizadas com sucesso!", "success");
+		} else {
+			show("Ocorreu um erro ao atualizar respostas! Entre em contato com o nosso setor de suporte", "error");
 		}
 	};
 
