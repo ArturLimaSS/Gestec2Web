@@ -22,6 +22,7 @@ import {
 	TextField,
 	DialogActions,
 	CircularProgress,
+	InputLabel,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -208,26 +209,27 @@ const ListaAnexos = () => {
 				<MenuItem onClick={excluirArquivo}>Excluir</MenuItem>
 			</Menu>
 
-			<Dialog fullWidth maxWidth="xl" fullScreen={isMd} open={openDialogAnexo} onClose={handleCloseDialogAnexo}>
+			<Dialog fullWidth maxWidth="sm" fullScreen={isMd} open={openDialogAnexo} onClose={handleCloseDialogAnexo}>
 				<DialogTitle>Visualizar/Editar Anexo - {selectedArquivo?.descricao}</DialogTitle>
 				<DialogContent>
-					<BlankCard>
-						<CardContent
+					<>
+						<Box
 							sx={{
 								padding: "1",
 							}}
 						>
-							<TextField label="Descrição" value={selectedArquivo?.descricao} onChange={e => setSelectedArquivo({ ...selectedArquivo, descricao: e.target.value })} fullWidth />
+							<InputLabel>Descrição</InputLabel>
+							<TextField value={selectedArquivo?.descricao} onChange={e => setSelectedArquivo({ ...selectedArquivo, descricao: e.target.value })} fullWidth />
 							<Box
 								sx={{
 									marginTop: 1,
 									overflow: isMd ? "scroll" : "hidden",
 								}}
 							>
-								<img src={selectedArquivo?.url} alt={selectedArquivo?.descricao} height="100%" width={"100%"} />
+								<img src={selectedArquivo?.url} alt={selectedArquivo?.descricao} style={{ width: "100%", maxHeight: "300px", objectFit: "contain" }} />
 							</Box>
-						</CardContent>
-					</BlankCard>
+						</Box>
+					</>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleCloseDialogAnexo}>Fechar</Button>

@@ -1,5 +1,5 @@
 import { UploadFile } from "@mui/icons-material";
-import { Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, useMediaQuery } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, InputLabel, TextField, Typography, useMediaQuery } from "@mui/material";
 import { useState, useRef, useEffect } from "react";
 import { useUploadStore } from "../../../zustand/Uploader/UploadStore";
 import { useSnackbar, closeSnackbar } from "notistack";
@@ -98,13 +98,22 @@ export const DialogAnexos = ({ setOpenMenu }) => {
 				style={{ display: "none" }} // Oculta o input
 				onChange={handleFileChange}
 			/>
-			<Dialog fullScreen={isMd} fullWidth maxWidth={"lg"} open={open} onClose={handleClose}>
+			<Dialog fullScreen={isMd} fullWidth maxWidth={"sm"} open={open} onClose={handleClose}>
 				<DialogTitle>Anexos</DialogTitle>
 				<DialogContent>
-					<Card>
-						<CardHeader title={<TextField label="Título da Imagem" onChange={e => setDescription(e.target.value)} fullWidth></TextField>}></CardHeader>
-						<CardContent>{preview && <img src={preview} alt="Preview" style={{ width: "100%", maxHeight: "700px", objectFit: "contain" }} />}</CardContent>
-					</Card>
+					<Box
+						sx={{
+							display: "flex",
+							flexDirection: "column",
+							gap: 3,
+						}}
+					>
+						<Box>
+							<InputLabel>Título da Imagem</InputLabel>
+							<TextField onChange={e => setDescription(e.target.value)} fullWidth></TextField>
+						</Box>
+						<Box>{preview && <img src={preview} alt="Preview" style={{ width: "100%", maxHeight: "300px", objectFit: "contain" }} />}</Box>
+					</Box>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose} color="primary">
