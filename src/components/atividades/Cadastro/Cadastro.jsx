@@ -276,7 +276,12 @@ const CadastroAtividade = () => {
 
 										<Grid item xs={12}>
 											<Autocomplete
-												onChange={e => setAtividadeData({ ...atividadeData, responsavel_id: e.target.value })}
+												onChange={(event, newValue) =>
+													setAtividadeData({
+														...atividadeData,
+														responsavel_id: newValue ? newValue.value : null, // Extrai o ID corretamente
+													})
+												}
 												renderInput={params => <TextField {...params} variant="outlined" label={"Selecione o responsável"} placeholder="Digite para filtrar..." />}
 												options={
 													users &&
